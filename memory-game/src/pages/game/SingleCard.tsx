@@ -1,10 +1,18 @@
 import { Image, GridItem } from "@chakra-ui/react";
 
+interface Card {
+  src: string;
+  cardBackImage: string;
+}
 interface SingleCardProps {
   card: object;
+  handleChoice: (card: Card) => void;
 }
 
-export default function SingleCard({ card }: SingleCardProps) {
+export default function SingleCard({ card, handleChoice }: SingleCardProps) {
+  const handleClick = () => {
+    handleChoice(card);
+  };
   return (
     <>
       <GridItem>
@@ -16,6 +24,7 @@ export default function SingleCard({ card }: SingleCardProps) {
           borderRadius="6px"
         />
         <Image
+          onClick={handleClick}
           src={card.cardBackImage}
           alt="card back image"
           w="60%"

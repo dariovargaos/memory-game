@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useStorage } from "../../hooks/useStorage";
 
 import { Button, Text, Grid, Flex } from "@chakra-ui/react";
@@ -9,6 +9,8 @@ import SingleCard from "./SingleCard";
 export default function Game() {
   const [cards, setCards] = useState<object[]>([]);
   const [turns, setTurns] = useState<number>(0);
+  const [choiceOne, setChoiceOne] = useState(null);
+  const [choiceTwo, setChoiceTwo] = useState(null);
   const cardImages = useStorage();
 
   const shuffleCards = async () => {
@@ -23,7 +25,30 @@ export default function Game() {
     setTurns(0);
   };
 
-  console.log(cards);
+  //handle choice
+  const handleChoice = (card: object) => {
+    choiceOne ? setChoiceTwo(card) : setChoiceOne(card);
+  };
+
+  //reset choices and increase turn
+  const resetTurn = () => {
+    setChoiceOne(null);
+    setChoiceTwo(null);
+    setTurns((prevTurns) => prevTurns + 1);
+  };
+
+  //compare two selected card
+  useEffect(() => {
+    if (choiceOne && choiceTwo) {
+      if (choiceOne.src === choiceTwo.src) {
+        console.log("those cards match");
+        resetTurn();
+      } else {
+        console.log("those cards do not match");
+        resetTurn();
+      }
+    }
+  }, [choiceOne, choiceTwo]);
 
   return (
     <>
@@ -35,7 +60,7 @@ export default function Game() {
       <Flex justify="center">
         <Grid templateColumns="1fr 1fr 1fr 1fr" w="60%">
           {cards.map((card) => (
-            <SingleCard key={card.id} card={card} />
+            <SingleCard key={card.id} card={card} handleChoice={handleChoice} />
           ))}
         </Grid>
       </Flex>
