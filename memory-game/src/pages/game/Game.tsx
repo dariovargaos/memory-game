@@ -1,16 +1,10 @@
 import { useState } from "react";
 import { useStorage } from "../../hooks/useStorage";
 
-import {
-  Button,
-  Text,
-  Box,
-  Image,
-  SimpleGrid,
-  Grid,
-  GridItem,
-  Flex,
-} from "@chakra-ui/react";
+import { Button, Text, Grid, Flex } from "@chakra-ui/react";
+
+//components
+import SingleCard from "./SingleCard";
 
 export default function Game() {
   const [cards, setCards] = useState<object[]>([]);
@@ -41,10 +35,7 @@ export default function Game() {
       <Flex justify="center">
         <Grid templateColumns="1fr 1fr 1fr 1fr" w="60%">
           {cards.map((card) => (
-            <GridItem key={card.id}>
-              <Image src={card.src} alt="card front image" w="60%" />
-              <Image src={card.cardBackImage} alt="card back image" w="60%" />
-            </GridItem>
+            <SingleCard key={card.id} card={card} />
           ))}
         </Grid>
       </Flex>
