@@ -53,7 +53,7 @@ export default function Game() {
         });
         resetTurn();
       } else {
-        resetTurn();
+        setTimeout(() => resetTurn(), 1500);
       }
     }
   }, [choiceOne, choiceTwo]);
@@ -70,7 +70,12 @@ export default function Game() {
       <Flex justify="center">
         <Grid templateColumns="1fr 1fr 1fr 1fr" w="60%">
           {cards.map((card) => (
-            <SingleCard key={card.id} card={card} handleChoice={handleChoice} />
+            <SingleCard
+              key={card.id}
+              card={card}
+              handleChoice={handleChoice}
+              flipped={card === choiceOne || card === choiceTwo || card.matched}
+            />
           ))}
         </Grid>
       </Flex>

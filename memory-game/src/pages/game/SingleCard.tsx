@@ -1,4 +1,4 @@
-import { Image, GridItem } from "@chakra-ui/react";
+import { Image, GridItem, Box } from "@chakra-ui/react";
 
 interface Card {
   src: string;
@@ -7,31 +7,51 @@ interface Card {
 interface SingleCardProps {
   card: object;
   handleChoice: (card: Card) => void;
+  flipped: boolean;
 }
 
-export default function SingleCard({ card, handleChoice }: SingleCardProps) {
+const cardImagesStyle = {
+  width: "60%",
+  border: "2px solid #fff",
+  borderRadius: "6px",
+  display: "block",
+  position: "absolute",
+};
+
+export default function SingleCard({
+  card,
+  handleChoice,
+  flipped,
+}: SingleCardProps) {
   const handleClick = () => {
     handleChoice(card);
   };
   return (
-    <>
+    <Box position="relative">
       <GridItem>
         <Image
           src={card.src}
           alt="card front image"
-          w="60%"
-          border="2px solid #fff"
-          borderRadius="6px"
+          sx={{
+            ...cardImagesStyle,
+            transform: flipped ? "rotateY(0deg)" : "rotateY(90deg)",
+            transitionDelay: flipped ? "0.2s" : "",
+            transition: flipped ? "" : "transform 0.2s ease-in",
+          }}
         />
         <Image
-          onClick={handleClick}
           src={card.cardBackImage}
           alt="card back image"
-          w="60%"
-          border="2px solid #fff"
-          borderRadius="6px"
+          onClick={handleClick}
+          sx={{
+            ...cardImagesStyle,
+            transform: flipped ? "rotateY(90deg)" : "",
+            transitionDelay: flipped ? "0s" : "0.2s",
+            transition: flipped ? "" : "transform 0.2s ease-in",
+            position: "relative",
+          }}
         />
       </GridItem>
-    </>
+    </Box>
   );
 }
