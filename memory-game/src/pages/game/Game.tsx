@@ -19,6 +19,7 @@ export default function Game() {
       .map((card) => ({
         ...card,
         id: Math.random(),
+        matched: false,
       }));
 
     setCards(shuffledCards);
@@ -41,14 +42,23 @@ export default function Game() {
   useEffect(() => {
     if (choiceOne && choiceTwo) {
       if (choiceOne.src === choiceTwo.src) {
-        console.log("those cards match");
+        setCards((prevCards) => {
+          return prevCards.map((card) => {
+            if (card.src === choiceOne.src) {
+              return { ...card, matched: true };
+            } else {
+              return card;
+            }
+          });
+        });
         resetTurn();
       } else {
-        console.log("those cards do not match");
         resetTurn();
       }
     }
   }, [choiceOne, choiceTwo]);
+
+  console.log(cards);
 
   return (
     <>

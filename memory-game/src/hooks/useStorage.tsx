@@ -20,7 +20,10 @@ export const useStorage = async () => {
   await Promise.all(
     imagePaths.map(async (path) => {
       const url = await getDownloadURL(ref(storage, path));
-      cardImages.push({ src: url, cardBackImage: cardBackImageUrl });
+      cardImages.push({
+        src: url,
+        cardBackImage: cardBackImageUrl,
+      });
     })
   );
 
