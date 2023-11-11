@@ -12,7 +12,7 @@ interface SingleCardProps {
 }
 
 const cardImagesStyle = {
-  width: "60%",
+  width: "80%",
   border: "2px solid #fff",
   borderRadius: "6px",
   display: "block",
@@ -32,31 +32,29 @@ export default function SingleCard({
 
   return (
     <Box position="relative">
-      <GridItem>
-        <Image
-          src={card.src}
-          alt="card front image"
-          sx={{
-            ...cardImagesStyle,
-            position: "absolute",
-            transform: flipped ? "rotateY(0deg)" : "rotateY(90deg)",
-            transition: "transform 0.2s ease-in",
-            zIndex: flipped ? 1 : 0,
-          }}
-        />
-        <Image
-          src={card.cardBackImage}
-          alt="card back image"
-          onClick={handleClick}
-          sx={{
-            ...cardImagesStyle,
-            position: "relative",
-            transform: flipped ? "rotateY(90deg)" : "rotateY(0deg)",
-            transition: "transform 0.2s ease-in",
-            zIndex: flipped ? 0 : 1,
-          }}
-        />
-      </GridItem>
+      <Image
+        src={card.src}
+        alt="card front image"
+        sx={{
+          ...cardImagesStyle,
+          position: "absolute",
+          transform: flipped ? "rotateY(0deg)" : "rotateY(90deg)",
+          transition: "transform 0.2s ease-in",
+          zIndex: flipped ? 1 : 0,
+        }}
+      />
+      <Image
+        src={card.cardBackImage}
+        alt="card back image"
+        onClick={handleClick}
+        sx={{
+          ...cardImagesStyle,
+          position: "relative",
+          transform: flipped ? "rotateY(90deg)" : "rotateY(0deg)",
+          transition: "transform 0.2s ease-in",
+          zIndex: flipped ? 0 : 1,
+        }}
+      />
     </Box>
   );
 }

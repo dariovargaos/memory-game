@@ -9,10 +9,11 @@ const customTheme = extendTheme({
       body: {
         backgroundColor: "#1b1523",
       },
-      h1: {
-        fontStyle: "Tahoma",
-      },
     },
+  },
+  fonts: {
+    heading: "Poppins, sans-serif",
+    body: "Poppins, sans-serif",
   },
 });
 

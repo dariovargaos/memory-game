@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useStorage } from "../../hooks/useStorage";
 
-import { Button, Text, Grid, Flex } from "@chakra-ui/react";
+import { Button, Text, Grid, Flex, SimpleGrid } from "@chakra-ui/react";
 
 //components
 import SingleCard from "./SingleCard";
@@ -73,7 +73,7 @@ export default function Game() {
       <Text color="white">Turns: {turns}</Text>
 
       <Flex justify="center">
-        <Grid templateColumns="1fr 1fr 1fr 1fr" w="60%">
+        <SimpleGrid columns={4} spacingY="20px">
           {cards.map((card) => (
             <SingleCard
               key={card.id}
@@ -83,7 +83,7 @@ export default function Game() {
               disabled={disabled}
             />
           ))}
-        </Grid>
+        </SimpleGrid>
       </Flex>
     </>
   );
