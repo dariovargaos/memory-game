@@ -8,6 +8,7 @@ interface SingleCardProps {
   card: object;
   handleChoice: (card: Card) => void;
   flipped: boolean;
+  disabled: boolean;
 }
 
 const cardImagesStyle = {
@@ -15,17 +16,20 @@ const cardImagesStyle = {
   border: "2px solid #fff",
   borderRadius: "6px",
   display: "block",
-  position: "absolute",
 };
 
 export default function SingleCard({
   card,
   handleChoice,
   flipped,
+  disabled,
 }: SingleCardProps) {
   const handleClick = () => {
-    handleChoice(card);
+    if (!disabled) {
+      handleChoice(card);
+    }
   };
+
   return (
     <Box position="relative">
       <GridItem>
@@ -34,9 +38,10 @@ export default function SingleCard({
           alt="card front image"
           sx={{
             ...cardImagesStyle,
+            position: "absolute",
             transform: flipped ? "rotateY(0deg)" : "rotateY(90deg)",
-            transitionDelay: flipped ? "0.2s" : "",
-            transition: flipped ? "" : "transform 0.2s ease-in",
+            transition: "transform 0.2s ease-in",
+            zIndex: flipped ? 1 : 0,
           }}
         />
         <Image
@@ -45,10 +50,10 @@ export default function SingleCard({
           onClick={handleClick}
           sx={{
             ...cardImagesStyle,
-            transform: flipped ? "rotateY(90deg)" : "",
-            transitionDelay: flipped ? "0s" : "0.2s",
-            transition: flipped ? "" : "transform 0.2s ease-in",
             position: "relative",
+            transform: flipped ? "rotateY(90deg)" : "rotateY(0deg)",
+            transition: "transform 0.2s ease-in",
+            zIndex: flipped ? 0 : 1,
           }}
         />
       </GridItem>

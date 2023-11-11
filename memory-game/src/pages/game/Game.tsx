@@ -11,6 +11,7 @@ export default function Game() {
   const [turns, setTurns] = useState<number>(0);
   const [choiceOne, setChoiceOne] = useState(null);
   const [choiceTwo, setChoiceTwo] = useState(null);
+  const [disabled, setDisabled] = useState<boolean>(false);
   const cardImages = useStorage();
 
   const shuffleCards = async () => {
@@ -36,11 +37,13 @@ export default function Game() {
     setChoiceOne(null);
     setChoiceTwo(null);
     setTurns((prevTurns) => prevTurns + 1);
+    setDisabled(false);
   };
 
   //compare two selected card
   useEffect(() => {
     if (choiceOne && choiceTwo) {
+      setDisabled(true);
       if (choiceOne.src === choiceTwo.src) {
         setCards((prevCards) => {
           return prevCards.map((card) => {
@@ -75,6 +78,7 @@ export default function Game() {
               card={card}
               handleChoice={handleChoice}
               flipped={card === choiceOne || card === choiceTwo || card.matched}
+              disabled={disabled}
             />
           ))}
         </Grid>
