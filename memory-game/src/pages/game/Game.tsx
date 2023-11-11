@@ -25,6 +25,8 @@ export default function Game() {
 
     setCards(shuffledCards);
     setTurns(0);
+    setChoiceOne(null);
+    setChoiceTwo(null);
   };
 
   //handle choice
@@ -68,7 +70,7 @@ export default function Game() {
       <Button color="white" background="transparent" onClick={shuffleCards}>
         New game
       </Button>
-      <Text color="white">{turns}</Text>
+      <Text color="white">Turns: {turns}</Text>
 
       <Flex justify="center">
         <Grid templateColumns="1fr 1fr 1fr 1fr" w="60%">
