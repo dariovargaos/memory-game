@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { useStorage } from "../../hooks/useStorage";
 
-import { Button, Text, Grid, Flex, SimpleGrid } from "@chakra-ui/react";
+import { Button, Text, Flex, SimpleGrid } from "@chakra-ui/react";
 
 //components
 import SingleCard from "./SingleCard";
@@ -13,6 +14,7 @@ export default function Game() {
   const [choiceTwo, setChoiceTwo] = useState(null);
   const [disabled, setDisabled] = useState<boolean>(false);
   const cardImages = useStorage();
+  const navigate = useNavigate();
 
   const shuffleCards = async () => {
     const shuffledCards = [...(await cardImages), ...(await cardImages)]
@@ -63,28 +65,46 @@ export default function Game() {
     }
   }, [choiceOne, choiceTwo]);
 
-  console.log(cards);
+  useEffect(() => {
+    shuffleCards();
+  }, []);
 
   return (
-    <>
-      <Button color="white" background="transparent" onClick={shuffleCards}>
-        New game
-      </Button>
-      <Text color="white">Turns: {turns}</Text>
-
-      <Flex justify="center">
-        <SimpleGrid columns={4} spacingY="20px">
-          {cards.map((card) => (
-            <SingleCard
-              key={card.id}
-              card={card}
-              handleChoice={handleChoice}
-              flipped={card === choiceOne || card === choiceTwo || card.matched}
-              disabled={disabled}
-            />
-          ))}
-        </SimpleGrid>
+    <Flex justify="center" flexDir="column" alignItems="center" gap={10}>
+      <Flex w="100%" justify="space-between" px={3}>
+        <Flex justify="center" flex="1">
+          <Button
+            color="white"
+            background="transparent"
+            onClick={shuffleCards}
+            _hover={{ background: "#301934" }}
+          >
+            New game
+          </Button>
+        </Flex>
+        <Button
+          color="white"
+          background="transparent"
+          onClick={() => navigate("/")}
+          _hover={{ background: "#301934" }}
+        >
+          Home
+        </Button>
       </Flex>
-    </>
+
+      <SimpleGrid columns={4} spacingY="20px">
+        {cards.map((card) => (
+          <SingleCard
+            key={card.id}
+            card={card}
+            handleChoice={handleChoice}
+            flipped={card === choiceOne || card === choiceTwo || card.matched}
+            disabled={disabled}
+          />
+        ))}
+      </SimpleGrid>
+
+      <Text color="white">Turns: {turns}</Text>
+    </Flex>
   );
 }

@@ -38,7 +38,7 @@ export default function Home() {
 
         <Text color="white">
           Objective: The goal of the memory game is to find all pairs of
-          mathcing cards.
+          matching cards.
         </Text>
         <Text color="white">Steps:</Text>
         <OrderedList color="white">
