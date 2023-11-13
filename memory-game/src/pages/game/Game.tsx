@@ -2,7 +2,19 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useStorage } from "../../hooks/useStorage";
 
-import { Button, Text, Flex, SimpleGrid } from "@chakra-ui/react";
+import {
+  Button,
+  Text,
+  Flex,
+  SimpleGrid,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton,
+} from "@chakra-ui/react";
 
 //components
 import SingleCard from "./SingleCard";
@@ -13,6 +25,7 @@ export default function Game() {
   const [choiceOne, setChoiceOne] = useState(null);
   const [choiceTwo, setChoiceTwo] = useState(null);
   const [disabled, setDisabled] = useState<boolean>(false);
+  const [isGameWon, setIsGameWon] = useState<boolean>(false);
   const cardImages = useStorage();
   const navigate = useNavigate();
 
@@ -29,6 +42,7 @@ export default function Game() {
     setTurns(0);
     setChoiceOne(null);
     setChoiceTwo(null);
+    setIsGameWon(false);
   };
 
   //handle choice
@@ -65,9 +79,18 @@ export default function Game() {
     }
   }, [choiceOne, choiceTwo]);
 
+  //start new game on when components first mounts
+  // useEffect(() => {
+  //   shuffleCards();
+  // });
+
+  //check whether the all cards have matched property on true
   useEffect(() => {
-    shuffleCards();
-  }, []);
+    const allMatched = cards.every((card) => card.matched);
+    if (allMatched && cards.length > 0) {
+      setIsGameWon(true);
+    }
+  }, [cards]);
 
   return (
     <Flex justify="center" flexDir="column" alignItems="center" gap={10}>
@@ -105,6 +128,33 @@ export default function Game() {
       </SimpleGrid>
 
       <Text color="white">Turns: {turns}</Text>
+
+      {isGameWon && (
+        <Modal
+          isOpen={isGameWon}
+          onClose={() => setIsGameWon(false)}
+          isCentered
+        >
+          <ModalOverlay />
+          <ModalContent backgroundColor="#301934" color="white" opacity="0.3">
+            <ModalHeader>You've won! Congratulations!</ModalHeader>
+            <ModalCloseButton />
+            <ModalBody>
+              You've matched all the cards in {turns} turns!
+            </ModalBody>
+            <ModalFooter>
+              <Button
+                color="white"
+                background="transparent"
+                onClick={() => setIsGameWon(false)}
+                _hover={{ background: "#1b1523" }}
+              >
+                Close
+              </Button>
+            </ModalFooter>
+          </ModalContent>
+        </Modal>
+      )}
     </Flex>
   );
 }

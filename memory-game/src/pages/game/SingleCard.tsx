@@ -1,4 +1,4 @@
-import { Image, GridItem, Box } from "@chakra-ui/react";
+import { Image, Box } from "@chakra-ui/react";
 
 interface Card {
   src: string;
