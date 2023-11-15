@@ -1,11 +1,8 @@
 import { Image, Box } from "@chakra-ui/react";
+import { Card } from "./Game";
 
-interface Card {
-  src: string;
-  cardBackImage: string;
-}
 interface SingleCardProps {
-  card: object;
+  card: Card;
   handleChoice: (card: Card) => void;
   flipped: boolean;
   disabled: boolean;

@@ -23,13 +23,13 @@ import {
 
 export default function Singup() {
   const [email, setEmail] = useState<string>("");
-  const [username, setUsername] = useState<string>("");
+  const [displayName, setDisplayName] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [showPassword, setShowPassword] = useState<boolean>(false);
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log(email, password);
+    console.log(email, password, displayName);
   };
 
   const handleClick = () => {
@@ -61,15 +61,15 @@ export default function Singup() {
             </InputGroup>
           </FormControl>
           <FormControl>
-            <FormLabel>username:</FormLabel>
+            <FormLabel>display name:</FormLabel>
             <InputGroup>
               <InputLeftElement>
                 <AtSignIcon />
               </InputLeftElement>
               <Input
                 type="text"
-                onChange={(e) => setUsername(e.target.value)}
-                value={username}
+                onChange={(e) => setDisplayName(e.target.value)}
+                value={displayName}
                 fontSize="1em"
                 color="white"
               />

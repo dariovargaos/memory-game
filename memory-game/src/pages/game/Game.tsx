@@ -19,34 +19,43 @@ import {
 //components
 import SingleCard from "./SingleCard";
 
+export interface Card {
+  id: number;
+  src: string;
+  cardBackImage: string;
+  matched: boolean;
+}
+
 export default function Game() {
-  const [cards, setCards] = useState<object[]>([]);
+  const [cards, setCards] = useState<Card[]>([]);
   const [turns, setTurns] = useState<number>(0);
-  const [choiceOne, setChoiceOne] = useState(null);
-  const [choiceTwo, setChoiceTwo] = useState(null);
+  const [choiceOne, setChoiceOne] = useState<Card | null>(null);
+  const [choiceTwo, setChoiceTwo] = useState<Card | null>(null);
   const [disabled, setDisabled] = useState<boolean>(false);
   const [isGameWon, setIsGameWon] = useState<boolean>(false);
-  const cardImages = useStorage();
+  const { data: cardImages, isLoading, isError, error } = useStorage();
   const navigate = useNavigate();
 
-  const shuffleCards = async () => {
-    const shuffledCards = [...(await cardImages), ...(await cardImages)]
-      .sort(() => Math.random() - 0.5)
-      .map((card) => ({
-        ...card,
-        id: Math.random(),
-        matched: false,
-      }));
+  const shuffleCards = () => {
+    if (cardImages) {
+      const shuffledCards: Card[] = [...cardImages, ...cardImages]
+        .sort(() => Math.random() - 0.5)
+        .map((card) => ({
+          ...card,
+          id: Math.random(),
+          matched: false,
+        }));
 
-    setCards(shuffledCards);
-    setTurns(0);
-    setChoiceOne(null);
-    setChoiceTwo(null);
-    setIsGameWon(false);
+      setCards(shuffledCards);
+      setTurns(0);
+      setChoiceOne(null);
+      setChoiceTwo(null);
+      setIsGameWon(false);
+    }
   };
 
   //handle choice
-  const handleChoice = (card: object) => {
+  const handleChoice = (card: Card) => {
     choiceOne ? setChoiceTwo(card) : setChoiceOne(card);
   };
 
@@ -79,11 +88,6 @@ export default function Game() {
     }
   }, [choiceOne, choiceTwo]);
 
-  //start new game on when components first mounts
-  // useEffect(() => {
-  //   shuffleCards();
-  // });
-
   //check whether the all cards have matched property on true
   useEffect(() => {
     const allMatched = cards.every((card) => card.matched);
@@ -94,6 +98,7 @@ export default function Game() {
 
   return (
     <Flex justify="center" flexDir="column" alignItems="center" gap={10}>
+      {isLoading && <Text color="white">Loading...</Text>}
       <Flex w="100%" justify="space-between" px={3}>
         <Flex justify="center" flex="1">
           <Button
