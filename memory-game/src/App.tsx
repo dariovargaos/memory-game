@@ -6,10 +6,11 @@ import {
   Navigate,
 } from "react-router-dom";
 
-// pages
+// pages and layouts
 import Home from "./pages/home/Home";
 import Game from "./pages/game/Game";
 import Login from "./pages/login/Login";
+import Singup from "./pages/signup/Singup";
 import LoginSignupLayout from "./layouts/LoginSignupLayout";
 
 function App() {
@@ -21,6 +22,7 @@ function App() {
 
         <Route element={<LoginSignupLayout />}>
           <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Singup />} />
         </Route>
       </Route>
     )

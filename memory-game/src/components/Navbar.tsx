@@ -10,8 +10,12 @@ export default function Navbar() {
 
       <Spacer />
 
-      <Button color="white">Login</Button>
-      <Button color="white">Register</Button>
+      <Link as={RouterLink} to="/login" color="white">
+        Login
+      </Link>
+      <Link as={RouterLink} to="/signup" color="white">
+        Register
+      </Link>
     </Flex>
   );
 }

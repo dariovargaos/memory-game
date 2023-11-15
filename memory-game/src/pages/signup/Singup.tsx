@@ -13,10 +13,17 @@ import {
   InputRightElement,
   Link,
 } from "@chakra-ui/react";
-import { EmailIcon, LockIcon, ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
+import {
+  EmailIcon,
+  LockIcon,
+  ViewIcon,
+  ViewOffIcon,
+  AtSignIcon,
+} from "@chakra-ui/icons";
 
-export default function Login() {
+export default function Singup() {
   const [email, setEmail] = useState<string>("");
+  const [username, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [showPassword, setShowPassword] = useState<boolean>(false);
 
@@ -37,7 +44,7 @@ export default function Login() {
         color="white"
       >
         <form onSubmit={handleSubmit}>
-          <Heading>Login</Heading>
+          <Heading>Signup</Heading>
           <FormControl>
             <FormLabel>email:</FormLabel>
             <InputGroup>
@@ -48,6 +55,21 @@ export default function Login() {
                 type="email"
                 onChange={(e) => setEmail(e.target.value)}
                 value={email}
+                fontSize="1em"
+                color="white"
+              />
+            </InputGroup>
+          </FormControl>
+          <FormControl>
+            <FormLabel>username:</FormLabel>
+            <InputGroup>
+              <InputLeftElement>
+                <AtSignIcon />
+              </InputLeftElement>
+              <Input
+                type="text"
+                onChange={(e) => setUsername(e.target.value)}
+                value={username}
                 fontSize="1em"
                 color="white"
               />
