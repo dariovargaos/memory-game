@@ -1,5 +1,6 @@
 import { useState, FormEvent } from "react";
 import { Link as RouterLink } from "react-router-dom";
+import { useLogin } from "../../hooks/useLogin";
 import {
   Heading,
   FormControl,
@@ -12,6 +13,7 @@ import {
   InputLeftElement,
   InputRightElement,
   Link,
+  Text,
 } from "@chakra-ui/react";
 import { EmailIcon, LockIcon, ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
 
@@ -19,10 +21,11 @@ export default function Login() {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [showPassword, setShowPassword] = useState<boolean>(false);
+  const { login, error, isPending } = useLogin();
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log(email, password);
+    login(email, password);
   };
 
   const handleClick = () => {
@@ -77,9 +80,23 @@ export default function Login() {
               </InputRightElement>
             </InputGroup>
           </FormControl>
-          <Button type="submit" colorScheme="whatsapp">
-            Login
-          </Button>
+          {error && (
+            <Text fontWeight="bold" color="red">
+              {error.message}
+            </Text>
+          )}
+          {!isPending && (
+            <Button type="submit" colorScheme="whatsapp">
+              Login
+            </Button>
+          )}
+          {isPending && (
+            <Button
+              isLoading
+              loadingText="Logging in..."
+              colorScheme="whatsapp"
+            ></Button>
+          )}
         </form>
         <Link as={RouterLink} color="white">
           Not registered yet?

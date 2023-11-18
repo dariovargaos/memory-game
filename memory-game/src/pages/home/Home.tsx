@@ -1,4 +1,6 @@
 import { useNavigate } from "react-router-dom";
+import { useAuthContext } from "../../hooks/useAuthContext";
+import { useLogout } from "../../hooks/useLogout";
 import {
   Heading,
   Text,
@@ -9,7 +11,14 @@ import {
   Button,
 } from "@chakra-ui/react";
 export default function Home() {
+  const { user } = useAuthContext();
+  const { logout, error, isPending } = useLogout();
   const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logout();
+    navigate("/");
+  };
   return (
     <Flex justify="center" flexDir="column" gap={6} alignItems="center">
       <Flex w="100%" justify="space-between" px={3}>
@@ -19,9 +28,22 @@ export default function Home() {
           </Heading>
         </Flex>
 
+        {user && <Text color="white">hello, {user.displayName}</Text>}
         <Button variant="link" color="white" onClick={() => navigate("/login")}>
           Login
         </Button>
+        <Button
+          variant="link"
+          color="white"
+          onClick={() => navigate("/signup")}
+        >
+          Signup
+        </Button>
+        {user && (
+          <Button variant="link" color="white" onClick={() => handleLogout()}>
+            Logout
+          </Button>
+        )}
       </Flex>
 
       <Button

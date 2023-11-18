@@ -1,5 +1,6 @@
 import { useState, FormEvent } from "react";
 import { Link as RouterLink } from "react-router-dom";
+import { useSignup } from "../../hooks/useSignup";
 import {
   Heading,
   FormControl,
@@ -12,6 +13,8 @@ import {
   InputLeftElement,
   InputRightElement,
   Link,
+  FormHelperText,
+  Text,
 } from "@chakra-ui/react";
 import {
   EmailIcon,
@@ -27,9 +30,11 @@ export default function Singup() {
   const [password, setPassword] = useState<string>("");
   const [showPassword, setShowPassword] = useState<boolean>(false);
 
+  const { signup, error, isPending } = useSignup();
+
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log(email, password, displayName);
+    signup(email, password, displayName);
   };
 
   const handleClick = () => {
@@ -72,8 +77,13 @@ export default function Singup() {
                 value={displayName}
                 fontSize="1em"
                 color="white"
+                minLength={1}
+                maxLength={20}
               />
             </InputGroup>
+            <FormHelperText>
+              Display name can have maximum of 20 characters.
+            </FormHelperText>
           </FormControl>
           <FormControl>
             <FormLabel>password:</FormLabel>
@@ -99,12 +109,20 @@ export default function Singup() {
               </InputRightElement>
             </InputGroup>
           </FormControl>
-          <Button type="submit" colorScheme="whatsapp">
-            Login
-          </Button>
+          {!isPending && (
+            <Button type="submit" colorScheme="whatsapp">
+              Sign up
+            </Button>
+          )}
+          {isPending && <Button isLoading loadingText="Signing up..."></Button>}
         </form>
+        {error && (
+          <Text color="red" fontWeight="bold">
+            {error.message}
+          </Text>
+        )}
         <Link as={RouterLink} color="white">
-          Not registered yet?
+          Are you registered already? Login here
         </Link>
       </Box>
     </Flex>
