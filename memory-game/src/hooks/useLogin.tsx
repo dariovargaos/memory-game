@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
 import { auth, db } from "../firebase/config";
 import { signInWithEmailAndPassword } from "firebase/auth";
+import { doc, updateDoc } from "firebase/firestore";
 import { useAuthContext } from "./useAuthContext";
 import { useToast } from "@chakra-ui/react";
-import { doc, updateDoc } from "firebase/firestore";
 
 interface LoginError {
   message: string;
@@ -60,6 +60,7 @@ export const useLogin = () => {
         setIsPending(false);
         setError(null);
       }
+
       toast({
         title: "Logged in.",
         status: "success",

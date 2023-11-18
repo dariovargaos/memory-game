@@ -23,12 +23,12 @@ const customTheme = extendTheme({
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
-    <AuthContextProvider>
-      <ChakraProvider theme={customTheme}>
-        <QueryClientProvider client={queryClient}>
+    <ChakraProvider theme={customTheme}>
+      <QueryClientProvider client={queryClient}>
+        <AuthContextProvider>
           <App />
-        </QueryClientProvider>
-      </ChakraProvider>
-    </AuthContextProvider>
+        </AuthContextProvider>
+      </QueryClientProvider>
+    </ChakraProvider>
   </React.StrictMode>
 );

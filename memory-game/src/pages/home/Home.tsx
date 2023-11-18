@@ -17,7 +17,6 @@ export default function Home() {
 
   const handleLogout = () => {
     logout();
-    navigate("/");
   };
   return (
     <Flex justify="center" flexDir="column" gap={6} alignItems="center">

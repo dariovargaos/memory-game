@@ -1,13 +1,14 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { auth, db } from "../firebase/config";
 import {
   createUserWithEmailAndPassword,
   updateProfile,
   UserCredential,
 } from "firebase/auth";
+import { collection, doc, setDoc } from "firebase/firestore";
 import { useAuthContext } from "./useAuthContext";
 import { useToast } from "@chakra-ui/react";
-import { collection, doc, setDoc } from "firebase/firestore";
 
 interface SignupError {
   message: string;
@@ -23,6 +24,7 @@ export const useSignup = () => {
   const { dispatch } = useAuthContext();
   const [isComponentMounted, setIsComponentMounted] = useState<boolean>(true);
 
+  const navigate = useNavigate();
   const toast = useToast();
 
   const validateInput = (
@@ -88,6 +90,7 @@ export const useSignup = () => {
       if (isComponentMounted) {
         setIsPending(false);
         setError(null);
+        navigate("/");
       }
       toast({
         title: "Successfully signed up.",
