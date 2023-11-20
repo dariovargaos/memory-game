@@ -81,6 +81,9 @@ export const useLogin = () => {
         case "auth/invalid-email":
           setError({ message: "Incorrect email or password." });
           break;
+        case "auth/invalid-login-credentials":
+          setError({ message: "Incorrect email or password." });
+          break;
         default:
           setError({ message: firebaseError.message });
       }

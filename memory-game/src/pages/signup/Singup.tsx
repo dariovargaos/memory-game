@@ -49,80 +49,89 @@ export default function Singup() {
         color="white"
       >
         <form onSubmit={handleSubmit}>
-          <Heading>Signup</Heading>
-          <FormControl>
-            <FormLabel>email:</FormLabel>
-            <InputGroup>
-              <InputLeftElement>
-                <EmailIcon />
-              </InputLeftElement>
-              <Input
-                type="email"
-                onChange={(e) => setEmail(e.target.value)}
-                value={email}
-                fontSize="1em"
-                color="white"
-              />
-            </InputGroup>
-          </FormControl>
-          <FormControl>
-            <FormLabel>display name:</FormLabel>
-            <InputGroup>
-              <InputLeftElement>
-                <AtSignIcon />
-              </InputLeftElement>
-              <Input
-                type="text"
-                onChange={(e) => setDisplayName(e.target.value)}
-                value={displayName}
-                fontSize="1em"
-                color="white"
-                minLength={1}
-                maxLength={20}
-              />
-            </InputGroup>
-            <FormHelperText>
-              Display name can have maximum of 20 characters.
-            </FormHelperText>
-          </FormControl>
-          <FormControl>
-            <FormLabel>password:</FormLabel>
-            <InputGroup>
-              <InputLeftElement>
-                <LockIcon />
-              </InputLeftElement>
-              <Input
-                type={showPassword ? "text" : "password"}
-                onChange={(e) => setPassword(e.target.value)}
-                value={password}
-                fontSize="1em"
-                color="white"
-              />
-              <InputRightElement>
-                <Button
-                  colorScheme="whatsapp"
-                  variant="ghost"
-                  onClick={handleClick}
-                >
-                  {showPassword ? <ViewOffIcon /> : <ViewIcon />}
+          <Flex flexDir="column" gap={2}>
+            <Heading>Signup</Heading>
+            <FormControl>
+              <FormLabel>email:</FormLabel>
+              <InputGroup>
+                <InputLeftElement>
+                  <EmailIcon />
+                </InputLeftElement>
+                <Input
+                  type="email"
+                  onChange={(e) => setEmail(e.target.value)}
+                  value={email}
+                  fontSize="1em"
+                  color="white"
+                />
+              </InputGroup>
+            </FormControl>
+            <FormControl>
+              <FormLabel>display name:</FormLabel>
+              <InputGroup>
+                <InputLeftElement>
+                  <AtSignIcon />
+                </InputLeftElement>
+                <Input
+                  type="text"
+                  onChange={(e) => setDisplayName(e.target.value)}
+                  value={displayName}
+                  fontSize="1em"
+                  color="white"
+                  minLength={1}
+                  maxLength={20}
+                />
+              </InputGroup>
+              <FormHelperText color="white">
+                Display name can have maximum of 20 characters.
+              </FormHelperText>
+            </FormControl>
+            <FormControl>
+              <FormLabel>password:</FormLabel>
+              <InputGroup>
+                <InputLeftElement>
+                  <LockIcon />
+                </InputLeftElement>
+                <Input
+                  type={showPassword ? "text" : "password"}
+                  onChange={(e) => setPassword(e.target.value)}
+                  value={password}
+                  fontSize="1em"
+                  color="white"
+                />
+                <InputRightElement>
+                  <Button
+                    colorScheme="telegram"
+                    variant="ghost"
+                    onClick={handleClick}
+                  >
+                    {showPassword ? <ViewOffIcon /> : <ViewIcon />}
+                  </Button>
+                </InputRightElement>
+              </InputGroup>
+              <FormHelperText color="white">
+                Password must have at least 6 characters.
+              </FormHelperText>
+            </FormControl>
+            <Flex justify="center">
+              {!isPending && (
+                <Button type="submit" colorScheme="telegram">
+                  Sign up
                 </Button>
-              </InputRightElement>
-            </InputGroup>
-          </FormControl>
-          {!isPending && (
-            <Button type="submit" colorScheme="whatsapp">
-              Sign up
-            </Button>
-          )}
-          {isPending && <Button isLoading loadingText="Signing up..."></Button>}
+              )}
+              {isPending && (
+                <Button isLoading loadingText="Signing up..."></Button>
+              )}
+            </Flex>
+          </Flex>
         </form>
         {error && (
           <Text color="red" fontWeight="bold">
             {error.message}
           </Text>
         )}
-        <Link as={RouterLink} color="white">
-          Are you registered already? Login here
+        <Link as={RouterLink} color="white" to="/login">
+          Are you registered already? Login here.
         </Link>
       </Box>
     </Flex>

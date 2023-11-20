@@ -6,7 +6,7 @@ export default function Navbar() {
   const { user } = useAuthContext();
   return (
     <Flex as="nav" p="10px" alignItems="center" gap="20px">
-      <Heading size="md" color="white">
+      <Heading size="xl" color="white">
         Magic Match
       </Heading>
 

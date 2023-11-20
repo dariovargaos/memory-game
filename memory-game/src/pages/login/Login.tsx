@@ -40,66 +40,70 @@ export default function Login() {
         color="white"
       >
         <form onSubmit={handleSubmit}>
-          <Heading>Login</Heading>
-          <FormControl>
-            <FormLabel>email:</FormLabel>
-            <InputGroup>
-              <InputLeftElement>
-                <EmailIcon />
-              </InputLeftElement>
-              <Input
-                type="email"
-                onChange={(e) => setEmail(e.target.value)}
-                value={email}
-                fontSize="1em"
-                color="white"
-              />
-            </InputGroup>
-          </FormControl>
-          <FormControl>
-            <FormLabel>password:</FormLabel>
-            <InputGroup>
-              <InputLeftElement>
-                <LockIcon />
-              </InputLeftElement>
-              <Input
-                type={showPassword ? "text" : "password"}
-                onChange={(e) => setPassword(e.target.value)}
-                value={password}
-                fontSize="1em"
-                color="white"
-              />
-              <InputRightElement>
-                <Button
-                  colorScheme="whatsapp"
-                  variant="ghost"
-                  onClick={handleClick}
-                >
-                  {showPassword ? <ViewOffIcon /> : <ViewIcon />}
+          <Flex flexDir="column" gap={2}>
+            <Heading>Login</Heading>
+            <FormControl>
+              <FormLabel>email:</FormLabel>
+              <InputGroup>
+                <InputLeftElement>
+                  <EmailIcon />
+                </InputLeftElement>
+                <Input
+                  type="email"
+                  onChange={(e) => setEmail(e.target.value)}
+                  value={email}
+                  fontSize="1em"
+                  color="white"
+                />
+              </InputGroup>
+            </FormControl>
+            <FormControl>
+              <FormLabel>password:</FormLabel>
+              <InputGroup>
+                <InputLeftElement>
+                  <LockIcon />
+                </InputLeftElement>
+                <Input
+                  type={showPassword ? "text" : "password"}
+                  onChange={(e) => setPassword(e.target.value)}
+                  value={password}
+                  fontSize="1em"
+                  color="white"
+                />
+                <InputRightElement>
+                  <Button
+                    colorScheme="telegram"
+                    variant="ghost"
+                    onClick={handleClick}
+                  >
+                    {showPassword ? <ViewOffIcon /> : <ViewIcon />}
+                  </Button>
+                </InputRightElement>
+              </InputGroup>
+            </FormControl>
+            {error && (
+              <Text fontWeight="bold" color="red">
+                {error.message}
+              </Text>
+            )}
+            <Flex justify="center">
+              {!isPending && (
+                <Button type="submit" colorScheme="telegram">
+                  Login
                 </Button>
-              </InputRightElement>
-            </InputGroup>
-          </FormControl>
-          {error && (
-            <Text fontWeight="bold" color="red">
-              {error.message}
-            </Text>
-          )}
-          {!isPending && (
-            <Button type="submit" colorScheme="whatsapp">
-              Login
-            </Button>
-          )}
-          {isPending && (
-            <Button
-              isLoading
-              loadingText="Logging in..."
-              colorScheme="whatsapp"
-            ></Button>
-          )}
+              )}
+              {isPending && (
+                <Button
+                  isLoading
+                  loadingText="Logging in..."
+                  colorScheme="whiteAlpha"
+                ></Button>
+              )}
+            </Flex>
+          </Flex>
         </form>
-        <Link as={RouterLink} color="white">
-          Not registered yet?
+        <Link as={RouterLink} color="white" to="/signup">
+          Not registered yet? Register here.
         </Link>
       </Box>
     </Flex>
