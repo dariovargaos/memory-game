@@ -82,7 +82,7 @@ export default function Singup() {
                   maxLength={20}
                 />
               </InputGroup>
-              <FormHelperText color="white">
+              <FormHelperText color="gray.400">
                 Display name can have maximum of 20 characters.
               </FormHelperText>
             </FormControl>
@@ -104,12 +104,13 @@ export default function Singup() {
                     colorScheme="telegram"
                     variant="ghost"
                     onClick={handleClick}
+                    _hover={{ opacity: "0.8" }}
                   >
                     {showPassword ? <ViewOffIcon /> : <ViewIcon />}
                   </Button>
                 </InputRightElement>
               </InputGroup>
-              <FormHelperText color="white">
+              <FormHelperText color="gray.400">
                 Password must have at least 6 characters.
               </FormHelperText>
             </FormControl>

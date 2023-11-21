@@ -75,6 +75,7 @@ export default function Login() {
                     colorScheme="telegram"
                     variant="ghost"
                     onClick={handleClick}
+                    _hover={{ opacity: "0.8" }}
                   >
                     {showPassword ? <ViewOffIcon /> : <ViewIcon />}
                   </Button>
@@ -87,12 +88,11 @@ export default function Login() {
               </Text>
             )}
             <Flex justify="center">
-              {!isPending && (
+              {!isPending ? (
                 <Button type="submit" colorScheme="telegram">
                   Login
                 </Button>
-              )}
-              {isPending && (
+              ) : (
                 <Button
                   isLoading
                   loadingText="Logging in..."

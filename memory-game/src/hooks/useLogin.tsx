@@ -64,6 +64,7 @@ export const useLogin = () => {
       toast({
         title: "Logged in.",
         status: "success",
+        variant: "customSuccess",
         duration: 3000,
         isClosable: true,
       });

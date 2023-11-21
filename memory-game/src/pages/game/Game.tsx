@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Route, Link as RouterLink } from "react-router-dom";
+import { Link as RouterLink } from "react-router-dom";
 import { useStorage } from "../../hooks/useStorage";
 
 import {
@@ -16,8 +16,8 @@ import {
   ModalCloseButton,
   Link,
   useBreakpointValue,
-  VStack,
-  Center,
+  useToast,
+  Progress,
 } from "@chakra-ui/react";
 
 //components
@@ -38,7 +38,9 @@ export default function Game() {
   const [disabled, setDisabled] = useState<boolean>(false);
   const [isGameWon, setIsGameWon] = useState<boolean>(false);
   const [gameStarted, setGameStarted] = useState<boolean>(false);
-  const { data: cardImages, isLoading, isError, error } = useStorage();
+  const { data: cardImages, isLoading, error } = useStorage();
+
+  const toast = useToast();
 
   const shuffleCards = () => {
     if (cardImages) {
@@ -111,7 +113,16 @@ export default function Game() {
 
   return (
     <Flex align="center" flexDir="column" gap={5}>
-      {isLoading && <Text color="white">Loading...</Text>}
+      {error && (
+        <>
+          <Text color="white">
+            There was an error fetching data. Please try refresh the page.
+          </Text>
+        </>
+      )}
+      {isLoading && (
+        <Progress size="xs" colorScheme="telegram" isIndeterminate />
+      )}
       <Flex w="100%" justify="flex-end" px={2} py={isSmallScreen ? 3 : 0}>
         <Link as={RouterLink} to="/" color="white" fontWeight="bold">
           Home

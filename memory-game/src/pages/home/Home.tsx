@@ -14,11 +14,13 @@ import {
   Grid,
   GridItem,
   useBreakpointValue,
+  useToast,
 } from "@chakra-ui/react";
 export default function Home() {
   const { user } = useAuthContext();
   const { logout, error, isPending } = useLogout();
   const navigate = useNavigate();
+  const toast = useToast();
 
   const handleLogout = () => {
     logout();
@@ -58,14 +60,22 @@ export default function Home() {
             {user && (
               <Flex gap={2} align="center">
                 <Text color="white">hello, {user.displayName}</Text>
-                <Button
-                  variant="outline"
-                  color="white"
-                  onClick={() => handleLogout()}
-                  _hover={{ background: "#301934" }}
-                >
-                  Logout
-                </Button>
+                {isPending ? (
+                  <Button
+                    isLoading
+                    loadingText="Logging out..."
+                    colorScheme="whiteAlpha"
+                  ></Button>
+                ) : (
+                  <Button
+                    color="white"
+                    variant="outline"
+                    onClick={() => handleLogout()}
+                    _hover={{ background: "#301934" }}
+                  >
+                    Logout
+                  </Button>
+                )}
               </Flex>
             )}
           </Flex>
@@ -76,7 +86,7 @@ export default function Home() {
             <Button
               variant="outline"
               color="white"
-              _hover={{ opacity: "0.8" }}
+              _hover={{ background: "#301934" }}
               onClick={() => navigate("/game")}
             >
               Start
@@ -123,6 +133,15 @@ export default function Home() {
               </VStack>
             </GridItem>
           </Grid>
+          {error &&
+            toast({
+              title: "Something went wrong.",
+              description: "Logout failed.",
+              status: "error",
+              variant: "customError",
+              duration: 3000,
+              isClosable: true,
+            })}
         </VStack>
       ) : (
         <VStack gap={5}>
@@ -150,14 +169,22 @@ export default function Home() {
             {user && (
               <Flex gap={2} align="center">
                 <Text color="white">hello, {user.displayName}</Text>
-                <Button
-                  color="white"
-                  variant="outline"
-                  onClick={() => handleLogout()}
-                  _hover={{ background: "#301934" }}
-                >
-                  Logout
-                </Button>
+                {isPending ? (
+                  <Button
+                    isLoading
+                    loadingText="Logging out..."
+                    colorScheme="whiteAlpha"
+                  ></Button>
+                ) : (
+                  <Button
+                    color="white"
+                    variant="outline"
+                    onClick={() => handleLogout()}
+                    _hover={{ background: "#301934" }}
+                  >
+                    Logout
+                  </Button>
+                )}
               </Flex>
             )}
           </Flex>
@@ -211,6 +238,15 @@ export default function Home() {
               </Text>
             </Flex>
           </VStack>
+          {error &&
+            toast({
+              title: "Something went wrong.",
+              description: "Logout failed.",
+              status: "error",
+              variant: "customError",
+              duration: 3000,
+              isClosable: true,
+            })}
         </VStack>
       )}
     </>

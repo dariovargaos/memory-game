@@ -19,6 +19,24 @@ const customTheme = extendTheme({
     heading: "Poppins, sans-serif",
     body: "Poppins, sans-serif",
   },
+  components: {
+    Alert: {
+      variants: {
+        customError: {
+          container: {
+            bg: "red.500",
+            color: "white",
+          },
+        },
+        customSuccess: {
+          container: {
+            bg: "#301934",
+            color: "white",
+          },
+        },
+      },
+    },
+  },
 });
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
