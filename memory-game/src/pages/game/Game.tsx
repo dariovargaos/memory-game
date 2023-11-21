@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { Route, Link as RouterLink } from "react-router-dom";
 import { useStorage } from "../../hooks/useStorage";
 
 import {
@@ -14,6 +14,10 @@ import {
   ModalFooter,
   ModalBody,
   ModalCloseButton,
+  Link,
+  useBreakpointValue,
+  VStack,
+  Center,
 } from "@chakra-ui/react";
 
 //components
@@ -33,8 +37,8 @@ export default function Game() {
   const [choiceTwo, setChoiceTwo] = useState<Card | null>(null);
   const [disabled, setDisabled] = useState<boolean>(false);
   const [isGameWon, setIsGameWon] = useState<boolean>(false);
+  const [gameStarted, setGameStarted] = useState<boolean>(false);
   const { data: cardImages, isLoading, isError, error } = useStorage();
-  const navigate = useNavigate();
 
   const shuffleCards = () => {
     if (cardImages) {
@@ -51,11 +55,13 @@ export default function Game() {
       setChoiceOne(null);
       setChoiceTwo(null);
       setIsGameWon(false);
+      setGameStarted(false);
     }
   };
 
   //handle choice
   const handleChoice = (card: Card) => {
+    if (!gameStarted) setGameStarted(true);
     choiceOne ? setChoiceTwo(card) : setChoiceOne(card);
   };
 
@@ -96,43 +102,68 @@ export default function Game() {
     }
   }, [cards]);
 
+  const isSmallScreen = useBreakpointValue({
+    base: true,
+    sm: true,
+    md: false,
+    lg: false,
+  });
+
   return (
-    <Flex justify="center" flexDir="column" alignItems="center" gap={10}>
+    <Flex align="center" flexDir="column" gap={5}>
       {isLoading && <Text color="white">Loading...</Text>}
-      <Flex w="100%" justify="space-between" px={3}>
-        <Flex justify="center" flex="1">
-          <Button
-            color="white"
-            background="transparent"
-            onClick={shuffleCards}
-            _hover={{ background: "#301934" }}
-          >
-            New game
-          </Button>
-        </Flex>
-        <Button
-          color="white"
-          background="transparent"
-          onClick={() => navigate("/")}
-          _hover={{ background: "#301934" }}
-        >
+      <Flex w="100%" justify="flex-end" px={2} py={isSmallScreen ? 3 : 0}>
+        <Link as={RouterLink} to="/" color="white" fontWeight="bold">
           Home
-        </Button>
+        </Link>
       </Flex>
 
-      <SimpleGrid columns={4} spacingY="20px">
-        {cards.map((card) => (
-          <SingleCard
-            key={card.id}
-            card={card}
-            handleChoice={handleChoice}
-            flipped={card === choiceOne || card === choiceTwo || card.matched}
-            disabled={disabled}
-          />
-        ))}
-      </SimpleGrid>
+      <Button
+        color="white"
+        background="transparent"
+        onClick={shuffleCards}
+        _hover={{ background: "#301934" }}
+      >
+        New game
+      </Button>
+      {isSmallScreen && (
+        <Flex flexDir="column" align="center" gap={4} ml={4} mr="auto">
+          <SimpleGrid columns={4} spacingY="20px">
+            {cards.map((card) => (
+              <SingleCard
+                key={card.id}
+                card={card}
+                handleChoice={handleChoice}
+                flipped={
+                  card === choiceOne || card === choiceTwo || card.matched
+                }
+                disabled={disabled}
+              />
+            ))}
+          </SimpleGrid>
 
-      <Text color="white">Turns: {turns}</Text>
+          {gameStarted && <Text color="white">Turns: {turns}</Text>}
+        </Flex>
+      )}
+      {!isSmallScreen && (
+        <>
+          <SimpleGrid columns={4} spacingY="20px">
+            {cards.map((card) => (
+              <SingleCard
+                key={card.id}
+                card={card}
+                handleChoice={handleChoice}
+                flipped={
+                  card === choiceOne || card === choiceTwo || card.matched
+                }
+                disabled={disabled}
+              />
+            ))}
+          </SimpleGrid>
+
+          {gameStarted && <Text color="white">Turns: {turns}</Text>}
+        </>
+      )}
 
       {isGameWon && (
         <Modal
@@ -141,8 +172,12 @@ export default function Game() {
           isCentered
         >
           <ModalOverlay />
-          <ModalContent backgroundColor="#301934" color="white" opacity="0.3">
-            <ModalHeader>You've won! Congratulations!</ModalHeader>
+          <ModalContent
+            backgroundColor="#301934"
+            color="white"
+            w={{ base: "90%", sm: "60%" }}
+          >
+            <ModalHeader>Congratulations!</ModalHeader>
             <ModalCloseButton />
             <ModalBody>
               You've matched all the cards in {turns} turns!

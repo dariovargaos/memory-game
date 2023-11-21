@@ -103,7 +103,7 @@ export default function Login() {
           </Flex>
         </form>
         <Link as={RouterLink} color="white" to="/signup">
-          Not registered yet? Register here.
+          Not signed up yet? <b>Signup here.</b>
         </Link>
       </Box>
     </Flex>

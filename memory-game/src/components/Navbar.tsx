@@ -1,12 +1,10 @@
 import { Link as RouterLink } from "react-router-dom";
-import { Button, Flex, Heading, Spacer, Link } from "@chakra-ui/react";
-import { useAuthContext } from "../hooks/useAuthContext";
+import { Flex, Heading, Spacer, Link } from "@chakra-ui/react";
 
 export default function Navbar() {
-  const { user } = useAuthContext();
   return (
     <Flex as="nav" p="10px" alignItems="center" gap="20px">
-      <Heading size="xl" color="white">
+      <Heading size={{ base: "lg" }} color="white">
         Magic Match
       </Heading>
 

@@ -131,7 +131,7 @@ export default function Singup() {
           </Text>
         )}
         <Link as={RouterLink} color="white" to="/login">
-          Are you registered already? Login here.
+          Signed up already? <b>Login here.</b>
         </Link>
       </Box>
     </Flex>

@@ -59,9 +59,10 @@ export default function Home() {
               <Flex gap={2} align="center">
                 <Text color="white">hello, {user.displayName}</Text>
                 <Button
-                  variant="link"
+                  variant="outline"
                   color="white"
                   onClick={() => handleLogout()}
+                  _hover={{ background: "#301934" }}
                 >
                   Logout
                 </Button>
@@ -150,9 +151,10 @@ export default function Home() {
               <Flex gap={2} align="center">
                 <Text color="white">hello, {user.displayName}</Text>
                 <Button
-                  variant="link"
                   color="white"
+                  variant="outline"
                   onClick={() => handleLogout()}
+                  _hover={{ background: "#301934" }}
                 >
                   Logout
                 </Button>
