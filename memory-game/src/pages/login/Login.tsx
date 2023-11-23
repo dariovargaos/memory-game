@@ -42,6 +42,7 @@ export default function Login() {
         <form onSubmit={handleSubmit}>
           <Flex flexDir="column" gap={2}>
             <Heading>Login</Heading>
+            <Text color="gray.500">Glad to see you back</Text>
             <FormControl>
               <FormLabel>email:</FormLabel>
               <InputGroup>
@@ -54,6 +55,7 @@ export default function Login() {
                   value={email}
                   fontSize="1em"
                   color="white"
+                  placeholder="Your email"
                 />
               </InputGroup>
             </FormControl>
@@ -69,13 +71,14 @@ export default function Login() {
                   value={password}
                   fontSize="1em"
                   color="white"
+                  placeholder="Your password"
                 />
                 <InputRightElement>
                   <Button
-                    colorScheme="telegram"
                     variant="ghost"
                     onClick={handleClick}
-                    _hover={{ opacity: "0.8" }}
+                    _hover={{ opacity: "0.7" }}
+                    color="#c23866"
                   >
                     {showPassword ? <ViewOffIcon /> : <ViewIcon />}
                   </Button>
@@ -89,14 +92,21 @@ export default function Login() {
             )}
             <Flex justify="center">
               {!isPending ? (
-                <Button type="submit" colorScheme="telegram">
+                <Button
+                  type="submit"
+                  background="#c23866"
+                  color="white"
+                  _hover={{ bg: "#c23866" }}
+                >
                   Login
                 </Button>
               ) : (
                 <Button
                   isLoading
                   loadingText="Logging in..."
-                  colorScheme="whiteAlpha"
+                  background="#c23866"
+                  color="white"
+                  _hover={{ bg: "#c23866" }}
                 ></Button>
               )}
             </Flex>

@@ -9,10 +9,10 @@ interface SingleCardProps {
 }
 
 const cardImagesStyle = {
-  width: "80%",
   border: "2px solid #fff",
   borderRadius: "6px",
   display: "block",
+  width: "85%",
 };
 
 export default function SingleCard({

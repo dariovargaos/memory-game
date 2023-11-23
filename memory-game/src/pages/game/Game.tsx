@@ -16,7 +16,6 @@ import {
   ModalCloseButton,
   Link,
   useBreakpointValue,
-  useToast,
   Progress,
 } from "@chakra-ui/react";
 
@@ -39,8 +38,6 @@ export default function Game() {
   const [isGameWon, setIsGameWon] = useState<boolean>(false);
   const [gameStarted, setGameStarted] = useState<boolean>(false);
   const { data: cardImages, isLoading, error } = useStorage();
-
-  const toast = useToast();
 
   const shuffleCards = () => {
     if (cardImages) {
@@ -104,6 +101,15 @@ export default function Game() {
     }
   }, [cards]);
 
+  //cleanup function
+  useEffect(() => {
+    return () => {
+      setCards([]);
+      setTurns(0), setChoiceOne(null), setChoiceTwo(null), setIsGameWon(false);
+      setGameStarted(false);
+    };
+  }, []);
+
   const isSmallScreen = useBreakpointValue({
     base: true,
     sm: true,
@@ -133,7 +139,7 @@ export default function Game() {
         color="white"
         background="transparent"
         onClick={shuffleCards}
-        _hover={{ background: "#301934" }}
+        _hover={{ background: "#c23866" }}
       >
         New game
       </Button>
@@ -158,7 +164,7 @@ export default function Game() {
       )}
       {!isSmallScreen && (
         <>
-          <SimpleGrid columns={4} spacingY="20px">
+          <SimpleGrid columns={4} spacingY="20px" spacingX="20px">
             {cards.map((card) => (
               <SingleCard
                 key={card.id}
@@ -191,7 +197,7 @@ export default function Game() {
             <ModalHeader>Congratulations!</ModalHeader>
             <ModalCloseButton />
             <ModalBody>
-              You've matched all the cards in {turns} turns!
+              You've matched all the cards in <b>{turns} turns</b>!
             </ModalBody>
             <ModalFooter>
               <Button

@@ -13,12 +13,12 @@ export const useStorage = () => {
     );
 
     const imagePaths: string[] = [
-      "cardImages/helmet-1.png",
-      "cardImages/potion-1.png",
-      "cardImages/ring-1.png",
-      "cardImages/scroll-1.png",
-      "cardImages/shield-1.png",
-      "cardImages/sword-1.png",
+      "cardImages/helmet.png",
+      "cardImages/potion.png",
+      "cardImages/ring.png",
+      "cardImages/scroll.png",
+      "cardImages/shield.png",
+      "cardImages/sword.png",
     ];
 
     const cardImages: CardImage[] = await Promise.all(
