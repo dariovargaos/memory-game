@@ -1,5 +1,6 @@
 import { useNavigate, Link as RouterLink } from "react-router-dom";
 import { useAuthContext } from "../../hooks/useAuthContext";
+import { useGameSettingsContext } from "../../hooks/useGameSettingsContext";
 import { useLogout } from "../../hooks/useLogout";
 import {
   Heading,
@@ -25,6 +26,7 @@ import {
 } from "@chakra-ui/react";
 export default function Home() {
   const { user } = useAuthContext();
+  const { difficulty, setDifficulty } = useGameSettingsContext();
   const { logout, error, isPending } = useLogout();
   const navigate = useNavigate();
   const toast = useToast();
@@ -99,7 +101,7 @@ export default function Home() {
                 <Stack divider={<StackDivider />} spacing={4}>
                   <Box>
                     <Heading size="xs">Difficulty</Heading>
-                    <RadioGroup>
+                    <RadioGroup value={difficulty} onChange={setDifficulty}>
                       <Stack direction="row">
                         <Radio colorScheme="customRadio" value="easy">
                           Easy

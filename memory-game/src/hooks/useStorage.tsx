@@ -19,10 +19,10 @@ export const useStorage = () => {
       "cardImages/scroll.png",
       "cardImages/shield.png",
       "cardImages/sword.png",
-      // "cardImages/book.png",
-      // "cardImages/cane.png",
-      // "cardImages/key.png",
-      // "cardImages/mace.png",
+      "cardImages/book.png",
+      "cardImages/cane.png",
+      "cardImages/key.png",
+      "cardImages/mace.png",
     ];
 
     const cardImages: CardImage[] = await Promise.all(

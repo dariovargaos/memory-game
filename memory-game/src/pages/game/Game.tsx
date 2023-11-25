@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link as RouterLink } from "react-router-dom";
 import { useStorage } from "../../hooks/useStorage";
+import { useGameSettingsContext } from "../../hooks/useGameSettingsContext";
 
 import {
   Button,
@@ -38,10 +39,19 @@ export default function Game() {
   const [isGameWon, setIsGameWon] = useState<boolean>(false);
   const [gameStarted, setGameStarted] = useState<boolean>(false);
   const { data: cardImages, isLoading, error } = useStorage();
+  const { difficulty } = useGameSettingsContext();
 
   const shuffleCards = () => {
     if (cardImages) {
-      const shuffledCards: Card[] = [...cardImages, ...cardImages]
+      const numberOfPairs =
+        difficulty === "easy" ? 6 : difficulty === "medium" ? 8 : 10;
+
+      const selectedNumberOfPairs = cardImages.slice(0, numberOfPairs);
+
+      const shuffledCards: Card[] = [
+        ...selectedNumberOfPairs,
+        ...selectedNumberOfPairs,
+      ]
         .sort(() => Math.random() - 0.5)
         .map((card) => ({
           ...card,
