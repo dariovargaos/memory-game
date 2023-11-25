@@ -15,6 +15,13 @@ import {
   GridItem,
   useBreakpointValue,
   useToast,
+  Card,
+  CardBody,
+  Stack,
+  StackDivider,
+  Box,
+  RadioGroup,
+  Radio,
 } from "@chakra-ui/react";
 export default function Home() {
   const { user } = useAuthContext();
@@ -83,14 +90,55 @@ export default function Home() {
             <Heading as="h1" color="white">
               Welcome to Magic Match!
             </Heading>
-            <Button
-              variant="outline"
+            <Card
+              background="transparent"
               color="white"
-              _hover={{ background: "#301934" }}
-              onClick={() => navigate("/game")}
+              border="1px solid white"
             >
-              Start
-            </Button>
+              <CardBody>
+                <Stack divider={<StackDivider />} spacing={4}>
+                  <Box>
+                    <Heading size="xs">Difficulty</Heading>
+                    <RadioGroup>
+                      <Stack direction="row">
+                        <Radio colorScheme="customRadio" value="easy">
+                          Easy
+                        </Radio>
+                        <Radio colorScheme="customRadio" value="medium">
+                          Medium
+                        </Radio>
+                        <Radio colorScheme="customRadio" value="hard">
+                          Hard
+                        </Radio>
+                      </Stack>
+                    </RadioGroup>
+                  </Box>
+                  <Box>
+                    <Heading size="xs">Timer</Heading>
+                    <RadioGroup>
+                      <Stack direction="row">
+                        <Radio colorScheme="customRadio" value="yes">
+                          Yes
+                        </Radio>
+                        <Radio colorScheme="customRadio" value="no">
+                          No
+                        </Radio>
+                      </Stack>
+                    </RadioGroup>
+                  </Box>
+                  <Box>
+                    <Button
+                      variant="outline"
+                      color="white"
+                      _hover={{ background: "#c23866" }}
+                      onClick={() => navigate("/game")}
+                    >
+                      Start
+                    </Button>
+                  </Box>
+                </Stack>
+              </CardBody>
+            </Card>
           </VStack>
 
           <Grid templateColumns="1fr 1fr" alignItems="center" p={2}>

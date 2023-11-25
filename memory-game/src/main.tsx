@@ -19,6 +19,11 @@ const customTheme = extendTheme({
     heading: "Poppins, sans-serif",
     body: "Poppins, sans-serif",
   },
+  colors: {
+    customRadio: {
+      pink: "#c23866",
+    },
+  },
   components: {
     Alert: {
       variants: {
@@ -35,6 +40,20 @@ const customTheme = extendTheme({
           },
         },
       },
+    },
+    Radio: {
+      baseStyle: (props) => ({
+        control: {
+          _checked: {
+            bg: "customRadio.pink",
+            borderColor: "customRadio.pink",
+            _hover: {
+              bg: "customRadio.pink",
+              borderColor: "customRadio.Pink",
+            },
+          },
+        },
+      }),
     },
   },
 });
