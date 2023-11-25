@@ -46,7 +46,10 @@ export default function Game() {
       const numberOfPairs =
         difficulty === "easy" ? 6 : difficulty === "medium" ? 8 : 10;
 
-      const selectedNumberOfPairs = cardImages.slice(0, numberOfPairs);
+      //shuffle card images so they are not same sequence over and over again
+      const shuffledImageUrls = [...cardImages].sort(() => Math.random() - 0.5);
+
+      const selectedNumberOfPairs = shuffledImageUrls.slice(0, numberOfPairs);
 
       const shuffledCards: Card[] = [
         ...selectedNumberOfPairs,
