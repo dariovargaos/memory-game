@@ -133,11 +133,9 @@ export default function Game() {
   return (
     <Flex align="center" flexDir="column" gap={5}>
       {error && (
-        <>
-          <Text color="white">
-            There was an error fetching data. Please try refresh the page.
-          </Text>
-        </>
+        <Text color="white">
+          There was an error fetching data. Please try refresh the page.
+        </Text>
       )}
       {isLoading && (
         <Progress size="xs" colorScheme="telegram" isIndeterminate />
@@ -146,16 +144,25 @@ export default function Game() {
         <Link as={RouterLink} to="/" color="white" fontWeight="bold">
           Home
         </Link>
+        <Button
+          color="white"
+          variant="link"
+          background="transparent"
+          onClick={shuffleCards}
+          _hover={{ background: "#c23866" }}
+        >
+          New game
+        </Button>
       </Flex>
-
-      <Button
+      {/* <Button
         color="white"
         background="transparent"
         onClick={shuffleCards}
         _hover={{ background: "#c23866" }}
       >
         New game
-      </Button>
+      </Button> */}
+
       {isSmallScreen && (
         <Flex flexDir="column" align="center" gap={4} ml={4} mr="auto">
           <SimpleGrid columns={4} spacingY="20px">
@@ -177,7 +184,13 @@ export default function Game() {
       )}
       {!isSmallScreen && (
         <>
-          <SimpleGrid columns={4} spacingY="20px" spacingX="20px">
+          <SimpleGrid
+            columns={
+              difficulty === "easy" ? 4 : difficulty === "medium" ? 4 : 5
+            }
+            spacingY="5px"
+            spacingX="10px"
+          >
             {cards.map((card) => (
               <SingleCard
                 key={card.id}

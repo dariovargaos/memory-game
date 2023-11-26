@@ -12,7 +12,7 @@ const cardImagesStyle = {
   border: "2px solid #fff",
   borderRadius: "6px",
   display: "block",
-  width: "85%",
+  width: "80%",
 };
 
 export default function SingleCard({

@@ -44,7 +44,7 @@ export default function Home() {
 
   return (
     <>
-      <VStack gap={5} maxW="100%">
+      <VStack gap={2} maxW="100%">
         <Flex w="100%" justify="flex-end" p={2}>
           {!user ? (
             <Flex gap={2}>
