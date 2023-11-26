@@ -2,7 +2,9 @@ import { createContext, ReactNode, useState } from "react";
 
 export interface GameSettingsContextType {
   difficulty: string;
+  timerEnabled: boolean;
   setDifficulty: (difficulty: string) => void;
+  setTimerEnabled: (timerEnabled: boolean) => void;
 }
 
 interface GameSettingsContextProviderProps {
@@ -17,10 +19,13 @@ export const GameSettingsContextProvider = ({
   children,
 }: GameSettingsContextProviderProps) => {
   const [difficulty, setDifficulty] = useState("easy");
+  const [timerEnabled, setTimerEnabled] = useState(false);
 
   const contextValue: GameSettingsContextType = {
     difficulty,
+    timerEnabled,
     setDifficulty,
+    setTimerEnabled,
   };
 
   return (

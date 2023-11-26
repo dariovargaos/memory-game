@@ -14,19 +14,10 @@ import {
   VStack,
   Grid,
   GridItem,
-  useBreakpointValue,
   useToast,
-  Card,
-  CardBody,
-  Stack,
-  StackDivider,
-  Box,
-  RadioGroup,
-  Radio,
 } from "@chakra-ui/react";
 export default function Home() {
   const { user } = useAuthContext();
-  const { difficulty, setDifficulty } = useGameSettingsContext();
   const { logout, error, isPending } = useLogout();
   const navigate = useNavigate();
   const toast = useToast();
@@ -34,13 +25,6 @@ export default function Home() {
   const handleLogout = () => {
     logout();
   };
-
-  const isSmallScreen: boolean | undefined = useBreakpointValue({
-    base: true,
-    sm: true,
-    md: true,
-    lg: false,
-  });
 
   return (
     <>
@@ -86,56 +70,14 @@ export default function Home() {
           <Heading as="h1" color="white" size={{ base: "lg" }}>
             Welcome to Magic Match!
           </Heading>
-          <Card
-            background="transparent"
+          <Button
+            variant="outline"
             color="white"
-            size={{ base: "sm" }}
-            border="1px solid white"
+            _hover={{ background: "#c23866" }}
+            onClick={() => navigate("/game")}
           >
-            <CardBody>
-              <Stack divider={<StackDivider />} spacing={4}>
-                <Box>
-                  <Heading size="xs">Difficulty</Heading>
-                  <RadioGroup value={difficulty} onChange={setDifficulty}>
-                    <Stack direction="row">
-                      <Radio colorScheme="customRadio" value="easy">
-                        Easy
-                      </Radio>
-                      <Radio colorScheme="customRadio" value="medium">
-                        Medium
-                      </Radio>
-                      <Radio colorScheme="customRadio" value="hard">
-                        Hard
-                      </Radio>
-                    </Stack>
-                  </RadioGroup>
-                </Box>
-                <Box>
-                  <Heading size="xs">Timer</Heading>
-                  <RadioGroup>
-                    <Stack direction="row">
-                      <Radio colorScheme="customRadio" value="yes">
-                        Yes
-                      </Radio>
-                      <Radio colorScheme="customRadio" value="no">
-                        No
-                      </Radio>
-                    </Stack>
-                  </RadioGroup>
-                </Box>
-                <Box>
-                  <Button
-                    variant="outline"
-                    color="white"
-                    _hover={{ background: "#c23866" }}
-                    onClick={() => navigate("/game")}
-                  >
-                    Start
-                  </Button>
-                </Box>
-              </Stack>
-            </CardBody>
-          </Card>
+            Start
+          </Button>
         </VStack>
 
         <Grid
