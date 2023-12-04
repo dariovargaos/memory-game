@@ -43,7 +43,7 @@ export const useLogout = () => {
           title: "Logged out.",
           status: "success",
           variant: "customSuccess",
-          duration: 5000,
+          duration: 3000,
           isClosable: true,
         });
 

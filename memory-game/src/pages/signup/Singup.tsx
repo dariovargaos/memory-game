@@ -102,9 +102,8 @@ export default function Singup() {
                 <InputRightElement>
                   <Button
                     variant="ghost"
+                    colorScheme="pink"
                     onClick={handleClick}
-                    color="#c23866"
-                    _hover={{ opacity: "0.7" }}
                   >
                     {showPassword ? <ViewOffIcon /> : <ViewIcon />}
                   </Button>
@@ -116,12 +115,7 @@ export default function Singup() {
             </FormControl>
             <Flex justify="center">
               {!isPending && (
-                <Button
-                  type="submit"
-                  background="#c23866"
-                  color="white"
-                  _hover={{ bg: "#c23866" }}
-                >
+                <Button type="submit" colorScheme="pink" color="white">
                   Sign up
                 </Button>
               )}
@@ -129,9 +123,8 @@ export default function Singup() {
                 <Button
                   isLoading
                   loadingText="Signing up..."
-                  background="#c23866"
+                  colorScheme="pink"
                   color="white"
-                  _hover={{ bg: "#c23866" }}
                 ></Button>
               )}
             </Flex>

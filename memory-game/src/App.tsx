@@ -13,6 +13,7 @@ import Game from "./pages/game/Game";
 import Login from "./pages/login/Login";
 import Signup from "./pages/signup/Singup";
 import LoginSignupLayout from "./layouts/LoginSignupLayout";
+import GameRoom from "./pages/gameRoom/GameRoom";
 
 function App() {
   const { user, authIsReady } = useAuthContext();
@@ -21,6 +22,7 @@ function App() {
       <Route>
         <Route path="/" element={<Home />} />
         <Route path="/game" element={<Game />} />
+        <Route path="/room" element={<GameRoom />} />
 
         <Route element={<LoginSignupLayout />}>
           <Route

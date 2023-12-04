@@ -43,7 +43,7 @@ const customTheme = extendTheme({
       },
     },
     Radio: {
-      baseStyle: (props) => ({
+      baseStyle: () => ({
         control: {
           _checked: {
             bg: "customRadio.pink",

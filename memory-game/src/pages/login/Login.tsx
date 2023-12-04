@@ -76,9 +76,8 @@ export default function Login() {
                 <InputRightElement>
                   <Button
                     variant="ghost"
+                    colorScheme="pink"
                     onClick={handleClick}
-                    _hover={{ opacity: "0.7" }}
-                    color="#c23866"
                   >
                     {showPassword ? <ViewOffIcon /> : <ViewIcon />}
                   </Button>
@@ -92,21 +91,15 @@ export default function Login() {
             )}
             <Flex justify="center">
               {!isPending ? (
-                <Button
-                  type="submit"
-                  background="#c23866"
-                  color="white"
-                  _hover={{ bg: "#c23866" }}
-                >
+                <Button type="submit" colorScheme="pink" color="white">
                   Login
                 </Button>
               ) : (
                 <Button
                   isLoading
                   loadingText="Logging in..."
-                  background="#c23866"
+                  colorScheme="pink"
                   color="white"
-                  _hover={{ bg: "#c23866" }}
                 ></Button>
               )}
             </Flex>

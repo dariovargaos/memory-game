@@ -95,6 +95,7 @@ export const useSignup = () => {
       toast({
         title: "Successfully signed up.",
         status: "success",
+        variant: "customSuccess",
         duration: 3000,
         isClosable: true,
       });

@@ -1,6 +1,6 @@
+import { useState } from "react";
 import { useNavigate, Link as RouterLink } from "react-router-dom";
 import { useAuthContext } from "../../hooks/useAuthContext";
-import { useGameSettingsContext } from "../../hooks/useGameSettingsContext";
 import { useLogout } from "../../hooks/useLogout";
 import {
   Heading,
@@ -15,8 +15,19 @@ import {
   Grid,
   GridItem,
   useToast,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton,
+  FormControl,
+  FormLabel,
+  Input,
 } from "@chakra-ui/react";
 export default function Home() {
+  const [isOpenMPModal, setIsOpenMPModal] = useState<boolean>(false);
   const { user } = useAuthContext();
   const { logout, error, isPending } = useLogout();
   const navigate = useNavigate();
@@ -35,17 +46,17 @@ export default function Home() {
               <Link as={RouterLink} to="/login" color="white" fontWeight="bold">
                 Login
               </Link>
-              <Link
-                as={RouterLink}
-                to="/signup"
-                color="white"
-                fontWeight="bold"
-              >
-                Signup
-              </Link>
             </Flex>
           ) : (
             <Flex gap={2} align="center">
+              <Button
+                color="white"
+                variant="outline"
+                _hover={{ background: "#c23866" }}
+                onClick={() => setIsOpenMPModal(true)}
+              >
+                Invite Friend
+              </Button>
               <Text color="white">hello, {user.displayName}</Text>
               {isPending ? (
                 <Button
@@ -76,7 +87,7 @@ export default function Home() {
             _hover={{ background: "#c23866" }}
             onClick={() => navigate("/game")}
           >
-            Start
+            Start Single Player Game
           </Button>
         </VStack>
 
@@ -118,8 +129,8 @@ export default function Home() {
               </Text>
 
               <Text color="white">
-                Have Fun! Remember, the key is to enjoy the game and improve
-                your memory skills.
+                <b>Have Fun!</b> Remember, the key is to enjoy the game and
+                improve your memory skills.
               </Text>
             </VStack>
           </GridItem>
@@ -134,6 +145,43 @@ export default function Home() {
             isClosable: true,
           })}
       </VStack>
+      <Modal
+        isOpen={isOpenMPModal}
+        onClose={() => setIsOpenMPModal(false)}
+        isCentered
+      >
+        <ModalOverlay />
+        <ModalContent
+          backgroundColor="#301934"
+          color="white"
+          w={{ base: "90%", sm: "60%" }}
+        >
+          <ModalHeader>Play with friends</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            <Button onClick={() => navigate("/room")}>
+              Invite Friend via Code
+            </Button>
+            <form>
+              <FormControl>
+                <FormLabel>Enter code</FormLabel>
+                <Input />
+                <Button type="submit">Submit</Button>
+              </FormControl>
+            </form>
+          </ModalBody>
+          <ModalFooter>
+            <Button
+              color="white"
+              background="transparent"
+              onClick={() => setIsOpenMPModal(false)}
+              _hover={{ background: "#1b1523" }}
+            >
+              Close
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
     </>
   );
 }

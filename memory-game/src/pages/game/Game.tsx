@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link as RouterLink } from "react-router-dom";
 import { useStorage } from "../../hooks/useStorage";
-import { useGameSettingsContext } from "../../hooks/useGameSettingsContext";
 
 import {
   Button,
@@ -26,7 +25,6 @@ import {
   RadioGroup,
   Radio,
   Heading,
-  VStack,
 } from "@chakra-ui/react";
 
 //components
@@ -291,8 +289,8 @@ export default function Game() {
           <Flex flex="1">
             <SimpleGrid
               columns={getGridColumns()}
-              spacingY="5px"
-              spacingX="10px"
+              spacingY="10px"
+              spacingX="15px"
             >
               {cards.map((card) => (
                 <SingleCard
@@ -308,15 +306,13 @@ export default function Game() {
             </SimpleGrid>
           </Flex>
 
-          <VStack>
-            {!gameStarted && (
+          <Flex flexDir="column" align="center" justify="center" w="300px">
+            {!gameStarted ? (
               <Card
                 background="transparent"
                 color="white"
-                size={{ base: "sm" }}
+                size={{ base: "sm", md: "lg" }}
                 border="1px solid white"
-                w="300px"
-                h="220px"
               >
                 <CardBody>
                   <Stack divider={<StackDivider />} spacing={4}>
@@ -365,19 +361,19 @@ export default function Game() {
                   </Stack>
                 </CardBody>
               </Card>
-            )}
-
-            {gameStarted && (
-              <>
+            ) : (
+              <Flex flexDir="column" justify="center" align="center" h="100%">
                 <Text color="white">
                   <b>Turns:</b> {turns}{" "}
                 </Text>
-                <Text color="white">
-                  <b>Time left:</b> {timerEnabled && `${timer}s`}
-                </Text>
-              </>
+                {timerEnabled && (
+                  <Text color="white">
+                    <b>Time left:</b> {timerEnabled && `${timer}s`}
+                  </Text>
+                )}
+              </Flex>
             )}
-          </VStack>
+          </Flex>
         </Flex>
       )}
 
