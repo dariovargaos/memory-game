@@ -1,5 +1,8 @@
 import { useState } from "react";
 import { useNavigate, Link as RouterLink } from "react-router-dom";
+import { v4 as uuid4 } from "uuid";
+import { doc, setDoc, getDoc } from "firebase/firestore";
+import { db } from "../../firebase/config";
 import { useAuthContext } from "../../hooks/useAuthContext";
 import { useLogout } from "../../hooks/useLogout";
 import {
@@ -26,6 +29,7 @@ import {
   FormLabel,
   Input,
 } from "@chakra-ui/react";
+
 export default function Home() {
   const [isOpenMPModal, setIsOpenMPModal] = useState<boolean>(false);
   const { user } = useAuthContext();
@@ -35,6 +39,55 @@ export default function Home() {
 
   const handleLogout = () => {
     logout();
+  };
+
+  const handleCreateGameRoom = async () => {
+    const gameId = uuid4();
+    try {
+      await setDoc(doc(db, "gameRooms", gameId), {
+        createdBy: user?.displayName,
+        gameState: { status: "pending" },
+      });
+      navigate(`/room/${gameId}`);
+    } catch (err) {
+      console.log("Error creating game room: ", err);
+    }
+  };
+
+  const checkGameRoomExists = async (gameId) => {
+    const docRef = doc(db, "gameRooms", gameId);
+    const docSnap = await getDoc(docRef);
+
+    return docSnap.exists();
+  };
+
+  const handleJoinGame = async (e) => {
+    e.preventDefault();
+    const gameId = e.target.elements.gameId.value;
+
+    try {
+      const exists = await checkGameRoomExists(gameId);
+      if (exists) {
+        navigate(`/room/${gameId}`);
+      } else {
+        toast({
+          title: "Game Room not found.",
+          description: "Please check the code and try again.",
+          status: "error",
+          duration: 3000,
+          isClosable: true,
+        });
+      }
+    } catch (err) {
+      console.log("Error joining game room: ", err);
+      toast({
+        title: "Error",
+        description: "There was and issue joining the game room.",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+    }
   };
 
   return (
@@ -159,13 +212,13 @@ export default function Home() {
           <ModalHeader>Play with friends</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
-            <Button onClick={() => navigate("/room")}>
+            <Button onClick={handleCreateGameRoom}>
               Invite Friend via Code
             </Button>
-            <form>
+            <form onSubmit={handleJoinGame}>
               <FormControl>
                 <FormLabel>Enter code</FormLabel>
-                <Input />
+                <Input name="gameId" />
                 <Button type="submit">Submit</Button>
               </FormControl>
             </form>

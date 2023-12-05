@@ -123,7 +123,7 @@ export default function Game() {
         });
         resetTurn();
       } else {
-        setTimeout(() => resetTurn(), 1500);
+        setTimeout(() => resetTurn(), 1000);
       }
     }
   }, [choiceOne, choiceTwo]);
