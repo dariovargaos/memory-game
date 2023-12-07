@@ -1,10 +1,11 @@
 import { useState } from "react";
 import { useNavigate, Link as RouterLink } from "react-router-dom";
 import { v4 as uuid4 } from "uuid";
-import { doc, setDoc, getDoc } from "firebase/firestore";
+import { doc, setDoc, getDoc, updateDoc } from "firebase/firestore";
 import { db } from "../../firebase/config";
 import { useAuthContext } from "../../hooks/useAuthContext";
 import { useLogout } from "../../hooks/useLogout";
+import { useDocument } from "../../hooks/useDocument";
 import {
   Heading,
   Text,
@@ -34,8 +35,14 @@ export default function Home() {
   const [isOpenMPModal, setIsOpenMPModal] = useState<boolean>(false);
   const { user } = useAuthContext();
   const { logout, error, isPending } = useLogout();
+  const { document: userData, error: userDataError } = useDocument(
+    "users",
+    user?.uid
+  );
   const navigate = useNavigate();
   const toast = useToast();
+
+  console.log(userData);
 
   const handleLogout = () => {
     logout();
@@ -45,8 +52,14 @@ export default function Home() {
     const gameId = uuid4();
     try {
       await setDoc(doc(db, "gameRooms", gameId), {
-        createdBy: user?.displayName,
-        gameState: { status: "pending" },
+        createdBy: {
+          id: userData?.id,
+          displayName: userData?.displayName,
+          wins: userData?.wins,
+          losses: userData?.losses,
+        },
+        opponent: null,
+        gameState: { waiting: true },
       });
       navigate(`/room/${gameId}`);
     } catch (err) {
@@ -54,24 +67,42 @@ export default function Home() {
     }
   };
 
-  const checkGameRoomExists = async (gameId) => {
-    const docRef = doc(db, "gameRooms", gameId);
-    const docSnap = await getDoc(docRef);
-
-    return docSnap.exists();
-  };
-
   const handleJoinGame = async (e) => {
     e.preventDefault();
     const gameId = e.target.elements.gameId.value;
 
     try {
-      const exists = await checkGameRoomExists(gameId);
-      if (exists) {
-        navigate(`/room/${gameId}`);
+      const gameRoomRef = doc(db, "gameRooms", gameId);
+      const gameRoomSnap = await getDoc(gameRoomRef);
+
+      if (gameRoomSnap.exists()) {
+        const gameRoom = gameRoomSnap.data();
+
+        if (gameRoom.createdBy.id !== user?.uid && !gameRoom.opponent) {
+          // const opponentUserData = await fetchUserData(user?.uid);
+          await updateDoc(gameRoomRef, {
+            opponent: {
+              id: userData?.id,
+              displayName: userData?.displayName,
+              wins: userData?.wins,
+              losses: userData?.losses,
+            },
+            gameState: { waiting: false },
+          });
+          navigate(`/room/${gameId}`);
+        } else {
+          toast({
+            title: "Game room issue",
+            description:
+              "The game room is already full or you are the creator.",
+            status: "error",
+            duration: 3000,
+            isClosable: true,
+          });
+        }
       } else {
         toast({
-          title: "Game Room not found.",
+          title: "Game Room not found",
           description: "Please check the code and try again.",
           status: "error",
           duration: 3000,
@@ -79,7 +110,7 @@ export default function Home() {
         });
       }
     } catch (err) {
-      console.log("Error joining game room: ", err);
+      console.log("Error joining game: ", err);
       toast({
         title: "Error",
         description: "There was and issue joining the game room.",
