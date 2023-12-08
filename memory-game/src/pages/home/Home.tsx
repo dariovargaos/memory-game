@@ -101,7 +101,7 @@ export default function Home() {
         }
       } else {
         toast({
-          title: "Game Room not found",
+          title: "Game Room not found.",
           description: "Please check the code and try again.",
           status: "error",
           duration: 3000,
