@@ -28,7 +28,7 @@ export const useLogout = () => {
     setIsPending(true);
 
     try {
-      if (user) {
+      if (user && user.uid) {
         const { uid } = user;
         await updateDoc(doc(db, "users", uid), {
           online: false,

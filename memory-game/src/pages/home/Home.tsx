@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, FormEvent } from "react";
 import { useNavigate, Link as RouterLink } from "react-router-dom";
 import { v4 as uuid4 } from "uuid";
 import { doc, setDoc, getDoc, updateDoc } from "firebase/firestore";
@@ -42,8 +42,6 @@ export default function Home() {
   const navigate = useNavigate();
   const toast = useToast();
 
-  console.log(userData);
-
   const handleLogout = () => {
     logout();
   };
@@ -67,9 +65,11 @@ export default function Home() {
     }
   };
 
-  const handleJoinGame = async (e) => {
+  const handleJoinGame = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const gameId = e.target.elements.gameId.value;
+    const gameId = (
+      e.currentTarget.elements.namedItem("gameId") as HTMLInputElement
+    ).value;
 
     try {
       const gameRoomRef = doc(db, "gameRooms", gameId);
@@ -79,7 +79,6 @@ export default function Home() {
         const gameRoom = gameRoomSnap.data();
 
         if (gameRoom.createdBy.id !== user?.uid && !gameRoom.opponent) {
-          // const opponentUserData = await fetchUserData(user?.uid);
           await updateDoc(gameRoomRef, {
             opponent: {
               id: userData?.id,
@@ -266,6 +265,7 @@ export default function Home() {
           </ModalFooter>
         </ModalContent>
       </Modal>
+      <Text color="white">{userDataError}</Text>
     </>
   );
 }

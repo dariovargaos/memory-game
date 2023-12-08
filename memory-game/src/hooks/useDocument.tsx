@@ -9,13 +9,17 @@ interface UseDocumentReturn {
 
 export const useDocument = (
   collectionName: string,
-  id: string
+  id: string | undefined
 ): UseDocumentReturn => {
   const [document, setDocument] = useState<DocumentData | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   //realtime data for document
   useEffect(() => {
+    if (!id) {
+      setError("Document ID is undefined");
+      return;
+    }
     const docRef = doc(db, collectionName, id);
     const unsubscribe = onSnapshot(
       docRef,

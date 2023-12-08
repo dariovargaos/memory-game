@@ -3,8 +3,8 @@ import { auth } from "../firebase/config";
 import { onAuthStateChanged } from "firebase/auth";
 
 interface User {
-  displayName: string;
-  uid: string;
+  displayName?: string;
+  uid?: string;
 }
 
 interface AuthState {
