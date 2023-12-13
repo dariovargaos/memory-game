@@ -2,7 +2,7 @@ import React, { createContext, useReducer, ReactNode, useEffect } from "react";
 import { auth } from "../firebase/config";
 import { onAuthStateChanged } from "firebase/auth";
 
-interface User {
+export interface User {
   displayName?: string;
   uid?: string;
 }

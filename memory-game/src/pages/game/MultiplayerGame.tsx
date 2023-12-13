@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { useStorage } from "../../hooks/useStorage";
-import { doc, updateDoc } from "firebase/firestore";
+import { DocumentData, doc, updateDoc } from "firebase/firestore";
 import { db } from "../../firebase/config";
 import {
   Button,
@@ -22,11 +22,22 @@ import {
 //components
 import SingleCard from "./SingleCard";
 
+//types
+import { User } from "../../context/AuthContext";
+
 export interface Card {
   id: number;
   src: string;
   cardBackImage: string;
   matched: boolean;
+}
+
+interface MultiplayerGameProps {
+  playerOne: string;
+  playerTwo: string;
+  currentPlayer?: string | null;
+  roomData: DocumentData | null;
+  user?: User | null;
 }
 
 export default function MultiplayerGame({
@@ -35,7 +46,7 @@ export default function MultiplayerGame({
   currentPlayer,
   roomData,
   user,
-}) {
+}: MultiplayerGameProps) {
   const [cards, setCards] = useState<Card[]>([]);
   const [choiceOne, setChoiceOne] = useState<Card | null>(null);
   const [choiceTwo, setChoiceTwo] = useState<Card | null>(null);

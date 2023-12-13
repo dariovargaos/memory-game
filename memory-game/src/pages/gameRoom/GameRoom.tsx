@@ -26,14 +26,15 @@ import {
 import MultiplayerGame from "../game/MultiplayerGame";
 
 export default function GameRoom() {
-  const [isGameStarted, setIsGameStarted] = useState(false);
-  const [playerOneScore, setPlayerOneScore] = useState(0);
-  const [playerTwoScore, setPlayerTwoScore] = useState(0);
+  const [isGameStarted, setIsGameStarted] = useState<boolean>(false);
+  const [playerOneScore, setPlayerOneScore] = useState<number>(0);
+  const [playerTwoScore, setPlayerTwoScore] = useState<number>(0);
+  const [currentPlayer, setCurrentPlayer] = useState<string | null>(null);
 
-  const { gameId } = useParams();
+  const { gameId } = useParams<string>();
   const navigate = useNavigate();
   const { user } = useAuthContext();
-  const [currentPlayer, setCurrentPlayer] = useState();
+
   const { document: roomData, error: roomError } = useDocument(
     "gameRooms",
     gameId
