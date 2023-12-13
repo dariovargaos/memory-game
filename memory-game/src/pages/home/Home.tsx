@@ -57,7 +57,10 @@ export default function Home() {
           losses: userData?.losses,
         },
         opponent: null,
-        gameState: { waiting: true },
+        currentPlayer: user?.uid,
+        playerOneScore: 0,
+        playerTwoScore: 0,
+        gameState: { waiting: true, playing: false, completed: false },
       });
       navigate(`/room/${gameId}`);
     } catch (err) {
