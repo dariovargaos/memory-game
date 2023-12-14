@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useDocument } from "../../hooks/useDocument";
+import { useStorage } from "../../hooks/useStorage";
 import { useAuthContext } from "../../hooks/useAuthContext";
 import { db } from "../../firebase/config";
 import {
@@ -34,13 +35,14 @@ export default function GameRoom() {
   const { gameId } = useParams<string>();
   const navigate = useNavigate();
   const { user } = useAuthContext();
-
   const { document: roomData, error: roomError } = useDocument(
     "gameRooms",
     gameId
   );
+  const { data: cardImages, isLoading, error } = useStorage();
   const toast = useToast();
 
+  //updating and getting document data in real time
   useEffect(() => {
     if (gameId) {
       const gameRoomRef = doc(db, "gameRooms", gameId);
@@ -60,34 +62,25 @@ export default function GameRoom() {
     }
   }, [gameId, setCurrentPlayer]);
 
-  useEffect(() => {
-    if (roomData?.gameState.playing) {
-      setIsGameStarted(true);
-    }
-  }, [roomData]);
+  //shuffling the cards
+  const shuffleCards = (cardImages) => {
+    if (cardImages) {
+      //shuffle card images so they are not in the same sequence over and over again
+      const shuffledImageUrls = [...cardImages].sort(() => Math.random() - 0.5);
 
-  const handleLeaveRoom = async () => {
-    if (gameId) {
-      const gameRoomRef = doc(db, "gameRooms", gameId);
-      const gameRoomSnap = await getDoc(gameRoomRef);
-
-      if (gameRoomSnap.exists()) {
-        const gameRoom = gameRoomSnap.data();
-        if (gameRoom.createdBy.id === user?.uid) {
-          if (gameRoom.opponent) {
-            await updateDoc(gameRoomRef, {
-              createdBy: gameRoom.opponent,
-              opponent: null,
-            });
-          } else {
-            await deleteDoc(gameRoomRef);
-          }
-        }
-      }
-      navigate("/");
+      const shuffledImages = [...shuffledImageUrls, ...shuffledImageUrls].sort(
+        () => Math.random() - 0.5
+      );
+      return shuffledImages.map((image, index) => ({
+        id: index,
+        src: image.src,
+        flipped: false,
+        matched: false,
+      }));
     }
   };
 
+  //function for copying id to the clipboard
   const handleCopyToClipboard = async () => {
     if (gameId) {
       try {
@@ -111,11 +104,42 @@ export default function GameRoom() {
     }
   };
 
+  //function for handling if one or both players leaves the room
+  const handleLeaveRoom = async () => {
+    if (gameId) {
+      const gameRoomRef = doc(db, "gameRooms", gameId);
+      const gameRoomSnap = await getDoc(gameRoomRef);
+
+      if (gameRoomSnap.exists()) {
+        const gameRoom = gameRoomSnap.data();
+        if (gameRoom.createdBy.id === user?.uid) {
+          if (gameRoom.opponent) {
+            await updateDoc(gameRoomRef, {
+              createdBy: gameRoom.opponent,
+              opponent: null,
+            });
+          } else {
+            await deleteDoc(gameRoomRef);
+          }
+        }
+      }
+      navigate("/");
+    }
+  };
+
+  //when everything is set start the game
   const handleStartGame = async () => {
-    if (gameId && roomData?.opponent && !roomData?.gameState.waiting) {
+    if (
+      gameId &&
+      roomData?.opponent &&
+      !roomData?.gameState.waiting &&
+      cardImages
+    ) {
+      const shuffledDeck = shuffleCards(cardImages);
       const gameRoomRef = doc(db, "gameRooms", gameId);
       await updateDoc(gameRoomRef, {
         "gameState.playing": true,
+        shuffledCards: shuffledDeck,
       });
       console.log("Game started");
       setIsGameStarted(true);
@@ -129,6 +153,13 @@ export default function GameRoom() {
       });
     }
   };
+
+  //starting the game when game state is playing === true
+  useEffect(() => {
+    if (roomData?.gameState.playing) {
+      setIsGameStarted(true);
+    }
+  }, [roomData]);
 
   return (
     <>

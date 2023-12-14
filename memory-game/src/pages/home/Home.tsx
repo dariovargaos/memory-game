@@ -61,6 +61,7 @@ export default function Home() {
         playerOneScore: 0,
         playerTwoScore: 0,
         gameState: { waiting: true, playing: false, completed: false },
+        shuffledCards: [],
       });
       navigate(`/room/${gameId}`);
     } catch (err) {

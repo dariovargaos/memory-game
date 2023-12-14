@@ -52,34 +52,8 @@ export default function MultiplayerGame({
   const [choiceTwo, setChoiceTwo] = useState<Card | null>(null);
   const [disabled, setDisabled] = useState<boolean>(false);
   const [isGameWon, setIsGameWon] = useState<boolean>(false);
-  const { data: cardImages, isLoading, error } = useStorage();
 
-  const shuffleCards = useCallback(() => {
-    if (cardImages) {
-      const numberOfPairs = 10;
-
-      //shuffle card images so they are not same sequence over and over again
-      const shuffledImageUrls = [...cardImages].sort(() => Math.random() - 0.5);
-
-      const selectedNumberOfPairs = shuffledImageUrls.slice(0, numberOfPairs);
-
-      const shuffledCards: Card[] = [
-        ...selectedNumberOfPairs,
-        ...selectedNumberOfPairs,
-      ]
-        .sort(() => Math.random() - 0.5)
-        .map((card) => ({
-          ...card,
-          id: Math.random(),
-          matched: false,
-        }));
-
-      setCards(shuffledCards);
-      setChoiceOne(null);
-      setChoiceTwo(null);
-      setIsGameWon(false);
-    }
-  }, [cardImages]);
+  console.log(roomData?.shuffledCards);
 
   //handle choice
   const handleChoice = async (card: Card) => {
@@ -156,13 +130,6 @@ export default function MultiplayerGame({
     };
   }, []);
 
-  useEffect(() => {
-    console.log("Shuffling cards");
-    if (roomData?.gameState?.playing) {
-      shuffleCards();
-    }
-  }, [roomData?.gameState?.playing, shuffleCards]);
-
   const isSmallScreen = useBreakpointValue({
     base: true,
     sm: true,
@@ -172,15 +139,6 @@ export default function MultiplayerGame({
 
   return (
     <Flex align="center" flexDir="column" gap={3}>
-      {error && (
-        <Text color="white">
-          There was an error fetching data. Please try refresh the page.
-        </Text>
-      )}
-      {isLoading && (
-        <Progress size="xs" colorScheme="telegram" isIndeterminate />
-      )}
-
       {isSmallScreen ? (
         <Flex w="100%" flexDir="column" align="center" gap={4}>
           <SimpleGrid columns={4} spacing={2}>
