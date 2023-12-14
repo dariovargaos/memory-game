@@ -50,11 +50,11 @@ export default function GameRoom() {
         //update your local state based on the document
         if (doc.exists()) {
           const gameData = doc.data();
-          console.log("Snapshot Update:", gameData);
+          // console.log("Snapshot Update:", gameData);
           setCurrentPlayer(gameData.currentPlayer);
           setPlayerOneScore(gameData.playerOneScore);
           setPlayerTwoScore(gameData.playerTwoScore);
-          console.log("Current player after update:", gameData.currentPlayer);
+          // console.log("Current player after update:", gameData.currentPlayer);
         }
       });
 
@@ -74,6 +74,7 @@ export default function GameRoom() {
       return shuffledImages.map((image, index) => ({
         id: index,
         src: image.src,
+        cardBackImage: image.cardBackImage,
         flipped: false,
         matched: false,
       }));

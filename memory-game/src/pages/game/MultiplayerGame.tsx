@@ -1,10 +1,8 @@
-import { useState, useEffect, useCallback } from "react";
-import { useStorage } from "../../hooks/useStorage";
-import { DocumentData, doc, updateDoc } from "firebase/firestore";
+import { useState, useEffect } from "react";
+import { DocumentData, doc, onSnapshot, updateDoc } from "firebase/firestore";
 import { db } from "../../firebase/config";
 import {
   Button,
-  Text,
   Flex,
   SimpleGrid,
   Modal,
@@ -15,7 +13,6 @@ import {
   ModalBody,
   ModalCloseButton,
   useBreakpointValue,
-  Progress,
   Card,
 } from "@chakra-ui/react";
 
@@ -53,12 +50,39 @@ export default function MultiplayerGame({
   const [disabled, setDisabled] = useState<boolean>(false);
   const [isGameWon, setIsGameWon] = useState<boolean>(false);
 
-  console.log(roomData?.shuffledCards);
+  console.log(cards);
+
+  useEffect(() => {
+    if (roomData?.id) {
+      const gameRoomRef = doc(db, "gameRooms", roomData?.id);
+      const unsubscribe = onSnapshot(gameRoomRef, (doc) => {
+        if (doc.exists()) {
+          const gameData = doc.data();
+          setCards(gameData.shuffledCards);
+        }
+      });
+
+      return () => unsubscribe();
+    }
+  }, [roomData?.id]);
 
   //handle choice
-  const handleChoice = async (card: Card) => {
+  const handleChoice = async (selectedCard: Card) => {
     if (user?.uid === roomData?.currentPlayer) {
-      choiceOne ? setChoiceTwo(card) : setChoiceOne(card);
+      const gameRoomRef = doc(db, "gameRooms", roomData?.id);
+
+      //find the card in the suffleCards array and flip it
+      const updatedCards = roomData?.shuffledCards.map((card) =>
+        card.id === selectedCard.id ? { ...card, flipped: !card.flipped } : card
+      );
+
+      //update Firestore document
+      await updateDoc(gameRoomRef, {
+        shuffledCards: updatedCards,
+      });
+
+      //set the choice in the local state
+      choiceOne ? setChoiceOne(selectedCard) : setChoiceOne(selectedCard);
     } else {
       console.log("Not your turn.");
     }
@@ -139,39 +163,19 @@ export default function MultiplayerGame({
 
   return (
     <Flex align="center" flexDir="column" gap={3}>
-      {isSmallScreen ? (
-        <Flex w="100%" flexDir="column" align="center" gap={4}>
-          <SimpleGrid columns={4} spacing={2}>
-            {cards.map((card) => (
-              <SingleCard
-                key={card.id}
-                card={card}
-                handleChoice={handleChoice}
-                flipped={
-                  card === choiceOne || card === choiceTwo || card.matched
-                }
-                disabled={disabled}
-              />
-            ))}
-          </SimpleGrid>
-        </Flex>
-      ) : (
-        <Flex w="100%" flexDir="column" align="center" gap={4}>
-          <SimpleGrid columns={5} spacing={2}>
-            {cards.map((card) => (
-              <SingleCard
-                key={card.id}
-                card={card}
-                handleChoice={handleChoice}
-                flipped={
-                  card === choiceOne || card === choiceTwo || card.matched
-                }
-                disabled={disabled}
-              />
-            ))}
-          </SimpleGrid>
-        </Flex>
-      )}
+      <Flex w="100%" flexDir="column" align="center" gap={4}>
+        <SimpleGrid columns={isSmallScreen ? 4 : 5} spacing={2}>
+          {cards.map((card) => (
+            <SingleCard
+              key={card.id}
+              card={card}
+              handleChoice={handleChoice}
+              flipped={card.flipped || card.matched}
+              disabled={disabled}
+            />
+          ))}
+        </SimpleGrid>
+      </Flex>
       {isGameWon && (
         <Modal
           isOpen={isGameWon}
