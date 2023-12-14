@@ -1,9 +1,9 @@
 import { Image, Box } from "@chakra-ui/react";
-import { Card } from "./Game";
+import { Card } from "./MultiplayerGame";
 
 interface SingleCardProps {
   card: Card;
-  handleChoice: (selectedCard: Card) => void;
+  handleChoice: (selectedCard: Card) => Promise<void>;
   flipped: boolean;
   disabled: boolean;
 }
@@ -15,7 +15,7 @@ const cardImagesStyle = {
   width: "80%",
 };
 
-export default function SingleCard({
+export default function MultiplayerCard({
   card,
   handleChoice,
   flipped,

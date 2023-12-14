@@ -14,17 +14,20 @@ import {
 import {
   Button,
   Flex,
-  Grid,
-  GridItem,
   List,
   ListItem,
   Spinner,
   Text,
   useToast,
+  useBreakpointValue,
+  Box,
 } from "@chakra-ui/react";
 
 //components
 import MultiplayerGame from "../game/MultiplayerGame";
+
+//types
+import { CardImage } from "../../hooks/useStorage";
 
 export default function GameRoom() {
   const [isGameStarted, setIsGameStarted] = useState<boolean>(false);
@@ -39,7 +42,7 @@ export default function GameRoom() {
     "gameRooms",
     gameId
   );
-  const { data: cardImages, isLoading, error } = useStorage();
+  const { data: cardImages } = useStorage();
   const toast = useToast();
 
   //updating and getting document data in real time
@@ -63,7 +66,7 @@ export default function GameRoom() {
   }, [gameId, setCurrentPlayer]);
 
   //shuffling the cards
-  const shuffleCards = (cardImages) => {
+  const shuffleCards = (cardImages: CardImage[]) => {
     if (cardImages) {
       //shuffle card images so they are not in the same sequence over and over again
       const shuffledImageUrls = [...cardImages].sort(() => Math.random() - 0.5);
@@ -162,55 +165,60 @@ export default function GameRoom() {
     }
   }, [roomData]);
 
+  const isSmallScreen = useBreakpointValue({ base: true, md: false });
+
   return (
     <>
-      <Button onClick={handleLeaveRoom}>Leave Room</Button>
-      <Grid templateColumns={{ base: "repeat(1, 1fr)", md: "repeat(3, 1fr)" }}>
-        <GridItem w={isGameStarted ? "150px" : ""}>
-          <Flex flexDir="column" align="center" justify="center" h="100vh">
-            <Text color="white">{roomData?.createdBy?.displayName}</Text>
-            {!isGameStarted ? (
-              <List>
-                <ListItem color="white">
-                  Wins: {roomData?.createdBy?.wins}
-                </ListItem>
-                <ListItem color="white">
-                  Losses: {roomData?.createdBy?.losses}
-                </ListItem>
-              </List>
-            ) : (
-              <>
-                <Text color="white">Matched pairs: {playerOneScore}</Text>
-                {currentPlayer === roomData?.opponent?.id && (
-                  <>
-                    <Text color="white">Waiting for turn</Text>
-                    <Spinner color="white" />
-                  </>
-                )}
-              </>
-            )}
-          </Flex>
-        </GridItem>
+      <Flex
+        flexDirection="column"
+        align="center"
+        m={isSmallScreen ? "4" : "8"}
+        p={isSmallScreen ? "2" : "4"}
+      >
+        <Button alignSelf="flex-start" onClick={handleLeaveRoom}>
+          Leave Room
+        </Button>
+        <Box textAlign="center" mb="4">
+          <Text fontSize={isSmallScreen ? "md" : "lg"} color="white">
+            {roomData?.createdBy?.displayName}
+          </Text>
+          {!isGameStarted ? (
+            <List>
+              <ListItem color="white">
+                Wins: {roomData?.createdBy?.wins}
+              </ListItem>
+              <ListItem color="white">
+                Losses: {roomData?.createdBy?.losses}
+              </ListItem>
+            </List>
+          ) : (
+            <>
+              <Text color="white">Matched pairs: {playerOneScore}</Text>
+              {currentPlayer === roomData?.opponent?.id && (
+                <>
+                  <Text color="white">Waiting for turn</Text>
+                  <Spinner color="white" />
+                </>
+              )}
+            </>
+          )}
+        </Box>
 
         {!isGameStarted ? (
-          <GridItem color="white">
-            <Flex flexDir="column" align="center" justify="center" h="100vh">
-              <Text>Game ID: {gameId}</Text>
-              <Button onClick={handleCopyToClipboard}>Copy Game ID</Button>
-              {user?.uid === roomData?.createdBy?.id && (
-                <Button
-                  onClick={handleStartGame}
-                  isDisabled={
-                    !roomData?.opponent || roomData?.gameState?.waiting
-                  }
-                >
-                  Play
-                </Button>
-              )}
-            </Flex>
-          </GridItem>
+          <Box textAlign="center" mb="4">
+            <Text>Game ID: {gameId}</Text>
+            <Button onClick={handleCopyToClipboard}>Copy Game ID</Button>
+            {user?.uid === roomData?.createdBy?.id && (
+              <Button
+                onClick={handleStartGame}
+                isDisabled={!roomData?.opponent || roomData?.gameState?.waiting}
+              >
+                Play
+              </Button>
+            )}
+          </Box>
         ) : (
-          <GridItem>
+          <Box mb="4">
             <MultiplayerGame
               playerOne={roomData?.createdBy?.id}
               playerTwo={roomData?.opponent?.id}
@@ -218,45 +226,45 @@ export default function GameRoom() {
               roomData={roomData}
               user={user}
             />
-          </GridItem>
+          </Box>
         )}
 
-        <GridItem color="white">
-          <Flex flexDir="column" align="center" justify="center" h="100vh">
-            {roomData?.opponent === null && (
-              <>
-                <Text color="white">Waiting for the opponent...</Text>
-                <Spinner />
-              </>
-            )}
-            {roomData?.opponent && (
-              <>
-                <Text color="white">{roomData?.opponent?.displayName}</Text>
-                {!isGameStarted ? (
-                  <List>
-                    <ListItem color="white">
-                      Wins: {roomData?.opponent?.wins}
-                    </ListItem>
-                    <ListItem color="white">
-                      Losses: {roomData?.opponent?.losses}
-                    </ListItem>
-                  </List>
-                ) : (
-                  <>
-                    <Text color="white">Matched pairs: {playerTwoScore}</Text>
-                    {currentPlayer === roomData?.createdBy?.id && (
-                      <>
-                        <Text color="white">Waiting for turn</Text>
-                        <Spinner />
-                      </>
-                    )}
-                  </>
-                )}
-              </>
-            )}
-          </Flex>
-        </GridItem>
-      </Grid>
+        <Box color="white" textAlign="center">
+          {roomData?.opponent === null && (
+            <>
+              <Text fontSize={isSmallScreen ? "md" : "lg"} color="white">
+                Waiting for the opponent...
+              </Text>
+              <Spinner />
+            </>
+          )}
+          {roomData?.opponent && (
+            <>
+              <Text color="white">{roomData?.opponent?.displayName}</Text>
+              {!isGameStarted ? (
+                <List>
+                  <ListItem color="white">
+                    Wins: {roomData?.opponent?.wins}
+                  </ListItem>
+                  <ListItem color="white">
+                    Losses: {roomData?.opponent?.losses}
+                  </ListItem>
+                </List>
+              ) : (
+                <>
+                  <Text color="white">Matched pairs: {playerTwoScore}</Text>
+                  {currentPlayer === roomData?.createdBy?.id && (
+                    <>
+                      <Text color="white">Waiting for turn</Text>
+                      <Spinner />
+                    </>
+                  )}
+                </>
+              )}
+            </>
+          )}
+        </Box>
+      </Flex>
       <Text>{roomError}</Text>
     </>
   );

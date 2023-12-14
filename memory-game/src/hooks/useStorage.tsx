@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { storage } from "../firebase/config";
 import { ref, getDownloadURL } from "firebase/storage";
 
-interface CardImage {
+export interface CardImage {
   src: string;
   cardBackImage: string;
 }
