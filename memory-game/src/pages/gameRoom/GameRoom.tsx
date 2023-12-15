@@ -158,6 +158,37 @@ export default function GameRoom() {
     }
   };
 
+  //start rematch
+  const handleRematch = async () => {
+    if (
+      gameId &&
+      roomData?.opponent &&
+      roomData?.gameState?.completed &&
+      cardImages
+    ) {
+      const shuffledDeck = shuffleCards(cardImages);
+      const gameRoomRef = doc(db, "gameRooms", gameId);
+      await updateDoc(gameRoomRef, {
+        "gameState.playing": true,
+        "gameState.completed": false,
+        playerOneScore: 0,
+        playerTwoScore: 0,
+        currentPlayer: roomData?.createdBy?.id,
+        shuffledCards: shuffledDeck,
+      });
+      console.log("Rematch started");
+      setIsGameStarted(true);
+    } else {
+      toast({
+        title: "Rematch cannot start.",
+        description: "Something went wrong.",
+        status: "warning",
+        duration: 2000,
+        isClosable: true,
+      });
+    }
+  };
+
   //starting the game when game state is playing === true
   useEffect(() => {
     if (roomData?.gameState.playing) {
@@ -170,7 +201,7 @@ export default function GameRoom() {
   return (
     <>
       <Flex
-        flexDirection="column"
+        flexDirection={isSmallScreen ? "column" : "row"}
         align="center"
         m={isSmallScreen ? "4" : "8"}
         p={isSmallScreen ? "2" : "4"}
@@ -194,18 +225,19 @@ export default function GameRoom() {
           ) : (
             <>
               <Text color="white">Matched pairs: {playerOneScore}</Text>
-              {currentPlayer === roomData?.opponent?.id && (
-                <>
-                  <Text color="white">Waiting for turn</Text>
-                  <Spinner color="white" />
-                </>
-              )}
+              {currentPlayer === roomData?.opponent?.id &&
+                !roomData?.gameState?.completed && (
+                  <>
+                    <Text color="white">Waiting for turn</Text>
+                    <Spinner color="white" />
+                  </>
+                )}
             </>
           )}
         </Box>
 
         {!isGameStarted ? (
-          <Box textAlign="center" mb="4">
+          <Box textAlign="center" mb="4" color="white">
             <Text>Game ID: {gameId}</Text>
             <Button onClick={handleCopyToClipboard}>Copy Game ID</Button>
             {user?.uid === roomData?.createdBy?.id && (
@@ -253,17 +285,27 @@ export default function GameRoom() {
               ) : (
                 <>
                   <Text color="white">Matched pairs: {playerTwoScore}</Text>
-                  {currentPlayer === roomData?.createdBy?.id && (
-                    <>
-                      <Text color="white">Waiting for turn</Text>
-                      <Spinner />
-                    </>
-                  )}
+                  {currentPlayer === roomData?.createdBy?.id &&
+                    !roomData?.gameState?.completed && (
+                      <>
+                        <Text color="white">Waiting for turn</Text>
+                        <Spinner />
+                      </>
+                    )}
                 </>
               )}
             </>
           )}
         </Box>
+        {user?.uid === roomData?.createdBy?.id && (
+          <Button
+            isDisabled={!roomData?.gameState?.completed}
+            alignSelf="flex-start"
+            onClick={handleRematch}
+          >
+            Rematch
+          </Button>
+        )}
       </Flex>
       <Text>{roomError}</Text>
     </>
