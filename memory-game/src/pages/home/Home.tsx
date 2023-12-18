@@ -29,16 +29,18 @@ import {
   FormControl,
   FormLabel,
   Input,
+  Spacer,
 } from "@chakra-ui/react";
 
 export default function Home() {
   const [isOpenMPModal, setIsOpenMPModal] = useState<boolean>(false);
   const { user } = useAuthContext();
   const { logout, error, isPending } = useLogout();
-  const { document: userData, error: userDataError } = useDocument(
-    "users",
-    user?.uid
-  );
+  const {
+    data: userData,
+    error: userError,
+    isLoading,
+  } = useDocument("users", user?.uid);
   const navigate = useNavigate();
   const toast = useToast();
 
@@ -127,15 +129,16 @@ export default function Home() {
   return (
     <>
       <VStack gap={2} maxW="100%">
-        <Flex w="100%" justify="flex-end" p={2}>
+        <Flex w="100%" p={2} align="center">
           {!user ? (
-            <Flex gap={2}>
+            <>
+              <Spacer />
               <Link as={RouterLink} to="/login" color="white" fontWeight="bold">
                 Login
               </Link>
-            </Flex>
+            </>
           ) : (
-            <Flex gap={2} align="center">
+            <>
               <Button
                 color="white"
                 variant="outline"
@@ -144,24 +147,27 @@ export default function Home() {
               >
                 Play with friend
               </Button>
-              <Text color="white">hello, {user.displayName}</Text>
-              {isPending ? (
-                <Button
-                  isLoading
-                  loadingText="Logging out..."
-                  colorScheme="whiteAlpha"
-                ></Button>
-              ) : (
-                <Button
-                  color="white"
-                  variant="outline"
-                  onClick={() => handleLogout()}
-                  _hover={{ background: "#301934" }}
-                >
-                  Logout
-                </Button>
-              )}
-            </Flex>
+              <Spacer />
+              <Flex gap={2} align="center">
+                <Text color="white">hello, {user.displayName}</Text>
+                {isPending ? (
+                  <Button
+                    isLoading
+                    loadingText="Logging out..."
+                    colorScheme="whiteAlpha"
+                  ></Button>
+                ) : (
+                  <Button
+                    color="white"
+                    variant="outline"
+                    onClick={() => handleLogout()}
+                    _hover={{ background: "#301934" }}
+                  >
+                    Logout
+                  </Button>
+                )}
+              </Flex>
+            </>
           )}
         </Flex>
         <VStack>
@@ -174,7 +180,7 @@ export default function Home() {
             _hover={{ background: "#c23866" }}
             onClick={() => navigate("/game")}
           >
-            Play
+            Start
           </Button>
         </VStack>
 
@@ -269,7 +275,7 @@ export default function Home() {
           </ModalFooter>
         </ModalContent>
       </Modal>
-      <Text color="white">{userDataError}</Text>
+      <Text color="white">{userError}</Text>
     </>
   );
 }
