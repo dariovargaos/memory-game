@@ -4,6 +4,7 @@ import { useDocument } from "../../hooks/useDocument";
 import { useStorage } from "../../hooks/useStorage";
 import { useAuthContext } from "../../hooks/useAuthContext";
 import { db } from "../../firebase/config";
+import { v4 as uuid4 } from "uuid";
 import {
   doc,
   updateDoc,
@@ -22,6 +23,7 @@ import {
   useBreakpointValue,
   Box,
 } from "@chakra-ui/react";
+import { CopyIcon } from "@chakra-ui/icons";
 
 //components
 import MultiplayerGame from "../game/MultiplayerGame";
@@ -74,8 +76,8 @@ export default function GameRoom() {
       const shuffledImages = [...shuffledImageUrls, ...shuffledImageUrls].sort(
         () => Math.random() - 0.5
       );
-      return shuffledImages.map((image, index) => ({
-        id: index,
+      return shuffledImages.map((image) => ({
+        id: uuid4(),
         src: image.src,
         cardBackImage: image.cardBackImage,
         flipped: false,
@@ -142,7 +144,7 @@ export default function GameRoom() {
       const shuffledDeck = shuffleCards(cardImages);
       const gameRoomRef = doc(db, "gameRooms", gameId);
       await updateDoc(gameRoomRef, {
-        "gameState.playing": true,
+        gameState: { playing: true },
         shuffledCards: shuffledDeck,
       });
       console.log("Game started");
@@ -169,8 +171,7 @@ export default function GameRoom() {
       const shuffledDeck = shuffleCards(cardImages);
       const gameRoomRef = doc(db, "gameRooms", gameId);
       await updateDoc(gameRoomRef, {
-        "gameState.playing": true,
-        "gameState.completed": false,
+        gameState: { playing: true, completed: false },
         playerOneScore: 0,
         playerTwoScore: 0,
         currentPlayer: roomData?.createdBy?.id,
@@ -181,9 +182,9 @@ export default function GameRoom() {
     } else {
       toast({
         title: "Rematch cannot start.",
-        description: "Something went wrong.",
+        description: "There is no opponent.",
         status: "warning",
-        duration: 2000,
+        duration: 3000,
         isClosable: true,
       });
     }
@@ -202,110 +203,130 @@ export default function GameRoom() {
     <>
       <Flex
         flexDirection={isSmallScreen ? "column" : "row"}
+        h={isSmallScreen ? "100vh" : ""}
         align="center"
         m={isSmallScreen ? "4" : "8"}
         p={isSmallScreen ? "2" : "4"}
       >
-        <Button alignSelf="flex-start" onClick={handleLeaveRoom}>
-          Leave Room
-        </Button>
-        <Box textAlign="center" mb="4">
-          <Text fontSize={isSmallScreen ? "md" : "lg"} color="white">
-            {roomData?.createdBy?.displayName}
-          </Text>
-          {!isGameStarted ? (
-            <List>
-              <ListItem color="white">
-                Wins: {roomData?.createdBy?.wins}
-              </ListItem>
-              <ListItem color="white">
-                Losses: {roomData?.createdBy?.losses}
-              </ListItem>
-            </List>
-          ) : (
-            <>
-              <Text color="white">Matched pairs: {playerOneScore}</Text>
-              {currentPlayer === roomData?.opponent?.id &&
-                !roomData?.gameState?.completed && (
-                  <>
-                    <Text color="white">Waiting for turn</Text>
-                    <Spinner color="white" />
-                  </>
-                )}
-            </>
-          )}
-        </Box>
-
-        {!isGameStarted ? (
-          <Box textAlign="center" mb="4" color="white">
-            <Text>Game ID: {gameId}</Text>
-            <Button onClick={handleCopyToClipboard}>Copy Game ID</Button>
-            {user?.uid === roomData?.createdBy?.id && (
+        <Flex justify="space-between" w="100%">
+          <Button onClick={handleLeaveRoom}>Leave Room</Button>
+          {user?.uid === roomData?.createdBy?.id &&
+            roomData?.gameState?.completed && (
               <Button
-                onClick={handleStartGame}
-                isDisabled={!roomData?.opponent || roomData?.gameState?.waiting}
+                isDisabled={!roomData?.gameState?.completed}
+                onClick={handleRematch}
               >
-                Play
+                Rematch
               </Button>
             )}
+        </Flex>
+        <Flex
+          flexDir={isSmallScreen ? "column" : "row"}
+          justify="space-evenly"
+          h="100vh"
+        >
+          <Box textAlign="center" mb="4">
+            <Text fontSize={isSmallScreen ? "md" : "lg"} color="white">
+              {roomData?.createdBy?.displayName}
+            </Text>
+            {!isGameStarted ? (
+              <List>
+                <ListItem color="white">
+                  Wins: {roomData?.createdBy?.wins}
+                </ListItem>
+                <ListItem color="white">
+                  Losses: {roomData?.createdBy?.losses}
+                </ListItem>
+              </List>
+            ) : (
+              <Flex flexDir="column" align="center" gap={1}>
+                <Text color="white" fontWeight="bold">
+                  Matched pairs: {playerOneScore}
+                </Text>
+                {currentPlayer === roomData?.opponent?.id &&
+                  !roomData?.gameState?.completed && (
+                    <>
+                      <Text color="white">Waiting for turn</Text>
+                      <Spinner color="white" />
+                    </>
+                  )}
+              </Flex>
+            )}
           </Box>
-        ) : (
-          <Box mb="4">
-            <MultiplayerGame
-              playerOne={roomData?.createdBy?.id}
-              playerTwo={roomData?.opponent?.id}
-              currentPlayer={currentPlayer}
-              roomData={roomData}
-              user={user}
-            />
-          </Box>
-        )}
 
-        <Box color="white" textAlign="center">
-          {roomData?.opponent === null && (
-            <>
-              <Text fontSize={isSmallScreen ? "md" : "lg"} color="white">
-                Waiting for the opponent...
-              </Text>
-              <Spinner />
-            </>
+          {!isGameStarted ? (
+            <Box textAlign="center" mb="4" color="white">
+              <Text>Game ID: {gameId}</Text>
+              <Flex flexDir="column" gap={3} align="center">
+                <Button
+                  onClick={handleCopyToClipboard}
+                  rightIcon={<CopyIcon />}
+                >
+                  Copy Game ID
+                </Button>
+                {user?.uid === roomData?.createdBy?.id && (
+                  <Button
+                    onClick={handleStartGame}
+                    isDisabled={
+                      !roomData?.opponent || roomData?.gameState?.waiting
+                    }
+                  >
+                    Play
+                  </Button>
+                )}
+              </Flex>
+            </Box>
+          ) : (
+            <Box mb="4">
+              <MultiplayerGame
+                playerOne={roomData?.createdBy?.id}
+                playerTwo={roomData?.opponent?.id}
+                currentPlayer={currentPlayer}
+                roomData={roomData}
+                user={user}
+              />
+            </Box>
           )}
-          {roomData?.opponent && (
-            <>
-              <Text color="white">{roomData?.opponent?.displayName}</Text>
-              {!isGameStarted ? (
-                <List>
-                  <ListItem color="white">
-                    Wins: {roomData?.opponent?.wins}
-                  </ListItem>
-                  <ListItem color="white">
-                    Losses: {roomData?.opponent?.losses}
-                  </ListItem>
-                </List>
-              ) : (
-                <>
-                  <Text color="white">Matched pairs: {playerTwoScore}</Text>
-                  {currentPlayer === roomData?.createdBy?.id &&
-                    !roomData?.gameState?.completed && (
-                      <>
-                        <Text color="white">Waiting for turn</Text>
-                        <Spinner />
-                      </>
-                    )}
-                </>
-              )}
-            </>
-          )}
-        </Box>
-        {user?.uid === roomData?.createdBy?.id && (
-          <Button
-            isDisabled={!roomData?.gameState?.completed}
-            alignSelf="flex-start"
-            onClick={handleRematch}
-          >
-            Rematch
-          </Button>
-        )}
+
+          <Box color="white" textAlign="center">
+            {roomData?.opponent === null && (
+              <>
+                <Text fontSize={isSmallScreen ? "md" : "lg"} color="white">
+                  Waiting for the opponent...
+                </Text>
+                <Spinner />
+              </>
+            )}
+            {roomData?.opponent && (
+              <>
+                <Text color="white">{roomData?.opponent?.displayName}</Text>
+                {!isGameStarted ? (
+                  <List>
+                    <ListItem color="white">
+                      Wins: {roomData?.opponent?.wins}
+                    </ListItem>
+                    <ListItem color="white">
+                      Losses: {roomData?.opponent?.losses}
+                    </ListItem>
+                  </List>
+                ) : (
+                  <Flex flexDir="column" align="center" gap={1}>
+                    <Text color="white" fontWeight="bold">
+                      Matched pairs: {playerTwoScore}
+                    </Text>
+                    {currentPlayer === roomData?.createdBy?.id &&
+                      !roomData?.gameState?.completed && (
+                        <>
+                          <Text color="white">Waiting for turn</Text>
+                          <Spinner />
+                        </>
+                      )}
+                  </Flex>
+                )}
+              </>
+            )}
+          </Box>
+        </Flex>
       </Flex>
       <Text>{roomError}</Text>
     </>

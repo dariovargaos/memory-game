@@ -142,7 +142,7 @@ export default function Home() {
                 _hover={{ background: "#c23866" }}
                 onClick={() => setIsOpenMPModal(true)}
               >
-                Invite Friend
+                Play with friend
               </Button>
               <Text color="white">hello, {user.displayName}</Text>
               {isPending ? (
@@ -174,7 +174,7 @@ export default function Home() {
             _hover={{ background: "#c23866" }}
             onClick={() => navigate("/game")}
           >
-            Start Single Player Game
+            Play
           </Button>
         </VStack>
 
@@ -243,10 +243,10 @@ export default function Home() {
           color="white"
           w={{ base: "90%", sm: "60%" }}
         >
-          <ModalHeader>Play with friends</ModalHeader>
+          <ModalHeader>Play with friend</ModalHeader>
           <ModalCloseButton />
-          <ModalBody>
-            <Button onClick={handleCreateGameRoom}>
+          <ModalBody display="flex" flexDir="column" gap={4}>
+            <Button onClick={handleCreateGameRoom} w="70%">
               Invite Friend via Code
             </Button>
             <form onSubmit={handleJoinGame}>

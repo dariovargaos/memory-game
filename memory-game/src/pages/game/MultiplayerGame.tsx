@@ -177,16 +177,15 @@ export default function MultiplayerGame({
   useEffect(() => {
     const checkWinner = async () => {
       const allMatched = cards.every((card) => card.matched);
-      if (allMatched && cards.length > 0) {
+      if (allMatched && cards.length > 0 && roomData?.opponent) {
         const gameRoomRef = doc(db, "gameRooms", roomData?.id);
         await updateDoc(gameRoomRef, {
-          "gameState.playing": false,
-          "gameState.completed": true,
+          gameState: { playing: false, completed: true },
         });
         if (roomData?.playerOneScore > roomData?.playerTwoScore) {
-          setWinner(roomData?.createdBy?.displayName);
+          setWinner(`The winner is ${roomData?.createdBy?.displayName}!`);
         } else if (roomData?.playerOneScore < roomData?.playerTwoScore) {
-          setWinner(roomData?.opponent?.displayName);
+          setWinner(`The winner is ${roomData?.opponent?.displayName}!`);
         } else {
           setWinner("It's a tie! No winner!");
         }
@@ -200,6 +199,7 @@ export default function MultiplayerGame({
     roomData?.opponent?.displayName,
     roomData?.playerOneScore,
     roomData?.playerTwoScore,
+    roomData?.opponent,
     roomData?.id,
   ]);
 
@@ -250,7 +250,7 @@ export default function MultiplayerGame({
           >
             <ModalHeader>Congratulations!</ModalHeader>
             <ModalCloseButton />
-            <ModalBody>THE WINNER IS {winner}</ModalBody>
+            <ModalBody>{winner}</ModalBody>
             <ModalFooter>
               <Button
                 color="white"
