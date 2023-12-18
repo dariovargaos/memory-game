@@ -255,12 +255,13 @@ export default function GameRoom() {
           </Box>
 
           {!isGameStarted ? (
-            <Box textAlign="center" mb="4" color="white">
-              <Text>Game ID: {gameId}</Text>
+            <Box textAlign="center" mb="4">
+              <Text color="white">Game ID: {gameId}</Text>
               <Flex flexDir="column" gap={3} align="center">
                 <Button
                   onClick={handleCopyToClipboard}
                   rightIcon={<CopyIcon />}
+                  colorScheme="pink"
                 >
                   Copy Game ID
                 </Button>

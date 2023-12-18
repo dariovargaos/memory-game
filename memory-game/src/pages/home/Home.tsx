@@ -36,11 +36,10 @@ export default function Home() {
   const [isOpenMPModal, setIsOpenMPModal] = useState<boolean>(false);
   const { user } = useAuthContext();
   const { logout, error, isPending } = useLogout();
-  const {
-    data: userData,
-    error: userError,
-    isLoading,
-  } = useDocument("users", user?.uid);
+  const { document: userData, error: userError } = useDocument(
+    "users",
+    user?.uid
+  );
   const navigate = useNavigate();
   const toast = useToast();
 
