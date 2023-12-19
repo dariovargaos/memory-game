@@ -200,136 +200,139 @@ export default function GameRoom() {
   const isSmallScreen = useBreakpointValue({ base: true, md: false });
 
   return (
-    <>
-      <Flex
-        flexDirection={isSmallScreen ? "column" : "row"}
-        h={isSmallScreen ? "100vh" : ""}
-        align="center"
-        m={isSmallScreen ? "4" : "8"}
-        p={isSmallScreen ? "2" : "4"}
-      >
-        <Flex justify="space-between" w="100%">
-          <Button onClick={handleLeaveRoom}>Leave Room</Button>
-          {user?.uid === roomData?.createdBy?.id &&
-            roomData?.gameState?.completed && (
-              <Button
-                isDisabled={!roomData?.gameState?.completed}
-                onClick={handleRematch}
-              >
-                Rematch
-              </Button>
-            )}
-        </Flex>
-        <Flex
-          flexDir={isSmallScreen ? "column" : "row"}
-          justify="space-evenly"
-          h="100vh"
-        >
-          <Box textAlign="center" mb="4">
-            <Text fontSize={isSmallScreen ? "md" : "lg"} color="white">
-              {roomData?.createdBy?.displayName}
-            </Text>
-            {!isGameStarted ? (
-              <List>
-                <ListItem color="white">
-                  Wins: {roomData?.createdBy?.wins}
-                </ListItem>
-                <ListItem color="white">
-                  Losses: {roomData?.createdBy?.losses}
-                </ListItem>
-              </List>
-            ) : (
-              <Flex flexDir="column" align="center" gap={1}>
-                <Text color="white" fontWeight="bold">
-                  Matched pairs: {playerOneScore}
-                </Text>
-                {currentPlayer === roomData?.opponent?.id &&
-                  !roomData?.gameState?.completed && (
-                    <>
-                      <Text color="white">Waiting for turn</Text>
-                      <Spinner color="white" />
-                    </>
-                  )}
-              </Flex>
-            )}
-          </Box>
+    <Flex flexDir="column" overflow="auto" h="100vh">
+      <Flex justify="space-between" w="100%" p={4}>
+        {!roomData?.gameState?.playing && (
+          <Button onClick={handleLeaveRoom} variant="outline" color="white">
+            Leave Room
+          </Button>
+        )}
 
-          {!isGameStarted ? (
-            <Box textAlign="center" mb="4">
-              <Text color="white">Game ID: {gameId}</Text>
-              <Flex flexDir="column" gap={3} align="center">
-                <Button
-                  onClick={handleCopyToClipboard}
-                  rightIcon={<CopyIcon />}
-                  colorScheme="pink"
-                >
-                  Copy Game ID
-                </Button>
-                {user?.uid === roomData?.createdBy?.id && (
-                  <Button
-                    onClick={handleStartGame}
-                    isDisabled={
-                      !roomData?.opponent || roomData?.gameState?.waiting
-                    }
-                  >
-                    Play
-                  </Button>
-                )}
-              </Flex>
-            </Box>
-          ) : (
-            <Box mb="4">
-              <MultiplayerGame
-                playerOne={roomData?.createdBy?.id}
-                playerTwo={roomData?.opponent?.id}
-                currentPlayer={currentPlayer}
-                roomData={roomData}
-                user={user}
-              />
-            </Box>
+        {user?.uid === roomData?.createdBy?.id &&
+          roomData?.gameState?.completed && (
+            <Button
+              isDisabled={!roomData?.gameState?.completed}
+              onClick={handleRematch}
+            >
+              Rematch
+            </Button>
           )}
+      </Flex>
 
-          <Box color="white" textAlign="center">
-            {roomData?.opponent === null && (
-              <>
-                <Text fontSize={isSmallScreen ? "md" : "lg"} color="white">
-                  Waiting for the opponent...
-                </Text>
-                <Spinner />
-              </>
-            )}
-            {roomData?.opponent && (
-              <>
-                <Text color="white">{roomData?.opponent?.displayName}</Text>
-                {!isGameStarted ? (
-                  <List>
-                    <ListItem color="white">
-                      Wins: {roomData?.opponent?.wins}
-                    </ListItem>
-                    <ListItem color="white">
-                      Losses: {roomData?.opponent?.losses}
-                    </ListItem>
-                  </List>
-                ) : (
-                  <Flex flexDir="column" align="center" gap={1}>
-                    <Text color="white" fontWeight="bold">
-                      Matched pairs: {playerTwoScore}
-                    </Text>
-                    {currentPlayer === roomData?.createdBy?.id &&
-                      !roomData?.gameState?.completed && (
-                        <>
-                          <Text color="white">Waiting for turn</Text>
-                          <Spinner />
-                        </>
-                      )}
-                  </Flex>
+      <Flex
+        flexDir={isSmallScreen ? "column" : "row"}
+        justify={isSmallScreen ? "space-evenly" : "space-around"}
+        align={isSmallScreen ? "center" : "center"}
+        h="100%"
+        w="100%"
+      >
+        <Box textAlign="center">
+          <Text fontSize={isSmallScreen ? "md" : "lg"} color="white">
+            {roomData?.createdBy?.displayName}
+          </Text>
+          {!isGameStarted ? (
+            <List>
+              <ListItem color="white">
+                Wins: {roomData?.createdBy?.wins}
+              </ListItem>
+              <ListItem color="white">
+                Losses: {roomData?.createdBy?.losses}
+              </ListItem>
+            </List>
+          ) : (
+            <Flex flexDir="column" align="center" gap={1}>
+              <Text color="white" fontWeight="bold">
+                Matched pairs: {playerOneScore}
+              </Text>
+              {currentPlayer === roomData?.opponent?.id &&
+                !roomData?.gameState?.completed && (
+                  <>
+                    <Text color="white">Waiting for turn</Text>
+                    <Spinner color="white" />
+                  </>
                 )}
-              </>
-            )}
+            </Flex>
+          )}
+        </Box>
+
+        {!isGameStarted ? (
+          <Box textAlign="center" mb="4">
+            <Text color="white">Game ID: {gameId}</Text>
+            <Flex flexDir="column" gap={3} align="center">
+              <Button
+                onClick={handleCopyToClipboard}
+                rightIcon={<CopyIcon />}
+                variant="outline"
+                color="white"
+              >
+                Copy Game ID
+              </Button>
+              {user?.uid === roomData?.createdBy?.id && (
+                <Button
+                  onClick={handleStartGame}
+                  isDisabled={
+                    !roomData?.opponent || roomData?.gameState?.waiting
+                  }
+                  variant="outline"
+                  color="white"
+                >
+                  Play
+                </Button>
+              )}
+            </Flex>
           </Box>
-        </Flex>
+        ) : (
+          <Box>
+            <MultiplayerGame
+              playerOne={roomData?.createdBy?.id}
+              playerTwo={roomData?.opponent?.id}
+              currentPlayer={currentPlayer}
+              roomData={roomData}
+              user={user}
+            />
+          </Box>
+        )}
+
+        <Box color="white" textAlign="center">
+          {roomData?.opponent === null && (
+            <>
+              <Text fontSize={isSmallScreen ? "md" : "lg"} color="white">
+                Waiting for the opponent...
+              </Text>
+              <Spinner />
+            </>
+          )}
+          {roomData?.opponent && (
+            <>
+              <Text color="white">{roomData?.opponent?.displayName}</Text>
+              {!isGameStarted ? (
+                <List>
+                  <ListItem color="white">
+                    Wins: {roomData?.opponent?.wins}
+                  </ListItem>
+                  <ListItem color="white">
+                    Losses: {roomData?.opponent?.losses}
+                  </ListItem>
+                </List>
+              ) : (
+                <Flex flexDir="column" align="center" gap={1}>
+                  <Text color="white" fontWeight="bold">
+                    Matched pairs: {playerTwoScore}
+                  </Text>
+                  {currentPlayer === roomData?.createdBy?.id &&
+                    !roomData?.gameState?.completed && (
+                      <>
+                        <Text color="white">Waiting for turn</Text>
+                        <Spinner />
+                      </>
+                    )}
+                </Flex>
+              )}
+            </>
+          )}
+        </Box>
       </Flex>
       <Text>{roomError}</Text>
-    </>
+    </Flex>
   );
 }

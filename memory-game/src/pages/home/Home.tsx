@@ -153,7 +153,8 @@ export default function Home() {
                   <Button
                     isLoading
                     loadingText="Logging out..."
-                    colorScheme="whiteAlpha"
+                    variant="outline"
+                    color="white"
                   ></Button>
                 ) : (
                   <Button
@@ -251,23 +252,35 @@ export default function Home() {
           <ModalHeader>Play with friend</ModalHeader>
           <ModalCloseButton />
           <ModalBody display="flex" flexDir="column" gap={4}>
-            <Button onClick={handleCreateGameRoom} w="70%">
+            <Button
+              onClick={handleCreateGameRoom}
+              variant="outline"
+              color="white"
+              _hover={{ background: "transparent" }}
+            >
               Invite Friend via Code
             </Button>
             <form onSubmit={handleJoinGame}>
               <FormControl>
                 <FormLabel>Enter code</FormLabel>
                 <Input name="gameId" />
-                <Button type="submit">Submit</Button>
+                <Button
+                  type="submit"
+                  color="white"
+                  variant="outline"
+                  _hover={{ background: "transparent" }}
+                >
+                  Submit
+                </Button>
               </FormControl>
             </form>
           </ModalBody>
           <ModalFooter>
             <Button
               color="white"
-              background="transparent"
+              variant="outline"
               onClick={() => setIsOpenMPModal(false)}
-              _hover={{ background: "#1b1523" }}
+              _hover={{ background: "transparent" }}
             >
               Close
             </Button>

@@ -14,6 +14,7 @@ import {
   ModalCloseButton,
   useBreakpointValue,
   Card,
+  Box,
 } from "@chakra-ui/react";
 
 //components
@@ -222,20 +223,18 @@ export default function MultiplayerGame({
   });
 
   return (
-    <Flex align="center" flexDir="column" gap={3}>
-      <Flex w="100%" flexDir="column" align="center" gap={4}>
-        <SimpleGrid columns={isSmallScreen ? 4 : 5} spacing={2}>
-          {cards.map((card) => (
-            <MultiplayerCard
-              key={card.id}
-              card={card}
-              handleChoice={handleChoice}
-              flipped={card.flipped || card.matched}
-              disabled={disabled}
-            />
-          ))}
-        </SimpleGrid>
-      </Flex>
+    <Box>
+      <SimpleGrid columns={isSmallScreen ? 4 : 5} spacing={2}>
+        {cards.map((card) => (
+          <MultiplayerCard
+            key={card.id}
+            card={card}
+            handleChoice={handleChoice}
+            flipped={card.flipped || card.matched}
+            disabled={disabled}
+          />
+        ))}
+      </SimpleGrid>
       {isGameWon && (
         <Modal
           isOpen={isGameWon}
@@ -264,6 +263,6 @@ export default function MultiplayerGame({
           </ModalContent>
         </Modal>
       )}
-    </Flex>
+    </Box>
   );
 }
