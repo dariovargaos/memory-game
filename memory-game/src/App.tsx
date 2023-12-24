@@ -14,6 +14,7 @@ import Login from "./pages/login/Login";
 import Signup from "./pages/signup/Singup";
 import LoginSignupLayout from "./layouts/LoginSignupLayout";
 import GameRoom from "./pages/gameRoom/GameRoom";
+import UserProfile from "./pages/userProfile/UserProfile";
 
 function App() {
   const { user, authIsReady } = useAuthContext();
@@ -23,6 +24,7 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/game/:gameId" element={<SinglePlayerRoom />} />
         <Route path="/room/:gameId" element={<GameRoom />} />
+        <Route path="/user/:id" element={<UserProfile />} />
 
         <Route element={<LoginSignupLayout />}>
           <Route

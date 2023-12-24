@@ -169,7 +169,9 @@ export default function Home() {
               </Button>
               <Spacer />
               <Flex gap={2} align="center">
-                <Text color="white">hello, {user.displayName}</Text>
+                <Link as={RouterLink} to={`/user/${user.uid}`} color="white">
+                  hello, {user.displayName}
+                </Link>
                 {isPending ? (
                   <Button
                     isLoading

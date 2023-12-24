@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link as RouterLink, useParams } from "react-router-dom";
+import { Link as RouterLink, useParams, useNavigate } from "react-router-dom";
 import { useStorage } from "../../hooks/useStorage";
 import { useDocument } from "../../hooks/useDocument";
 import { useAuthContext } from "../../hooks/useAuthContext";
@@ -31,7 +31,7 @@ import {
   useToast,
   Spacer,
 } from "@chakra-ui/react";
-import { doc, onSnapshot, updateDoc } from "firebase/firestore";
+import { deleteDoc, doc, onSnapshot, updateDoc } from "firebase/firestore";
 import { db } from "../../firebase/config";
 
 //components
@@ -50,6 +50,7 @@ export default function SinglePlayerRoom() {
     gameId
   );
   const { data: cardImages } = useStorage();
+  const navigate = useNavigate();
   const toast = useToast();
 
   //shuffling the cards
@@ -106,6 +107,15 @@ export default function SinglePlayerRoom() {
     return () => clearInterval(interval);
   }, [timer, roomData]);
 
+  //delete firestore document on leave
+  const handleLeaveRoom = async () => {
+    if (gameId) {
+      const gameRoomRef = doc(db, "spRooms", gameId);
+      await deleteDoc(gameRoomRef);
+      navigate("/");
+    }
+  };
+
   //when everything is set start the game
   const handleStartGame = async () => {
     if (gameId && cardImages) {
@@ -134,13 +144,13 @@ export default function SinglePlayerRoom() {
 
   return (
     <Flex flexDir="column">
-      <Flex px={2}>
-        <Link as={RouterLink} to="/" color="white">
+      <Flex p={2}>
+        <Button onClick={handleLeaveRoom} variant="outline" color="white">
           Leave game
-        </Link>
+        </Button>
       </Flex>
-      <Flex justify="space-around" align="center">
-        <Flex flexDir="column" gap={5}>
+      <Flex justify={isGameStarted ? "space-around" : ""} align="center" p={2}>
+        <Flex flexDir="column" gap={5} align="center">
           <Card
             background="transparent"
             color="white"
