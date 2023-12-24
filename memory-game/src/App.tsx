@@ -9,7 +9,7 @@ import { useAuthContext } from "./hooks/useAuthContext";
 
 // pages and layouts
 import Home from "./pages/home/Home";
-import Game from "./pages/game/Game";
+import SinglePlayerRoom from "./pages/gameRoom/SinglePlayerRoom";
 import Login from "./pages/login/Login";
 import Signup from "./pages/signup/Singup";
 import LoginSignupLayout from "./layouts/LoginSignupLayout";
@@ -21,7 +21,7 @@ function App() {
     createRoutesFromElements(
       <Route>
         <Route path="/" element={<Home />} />
-        <Route path="/game" element={<Game />} />
+        <Route path="/game/:gameId" element={<SinglePlayerRoom />} />
         <Route path="/room/:gameId" element={<GameRoom />} />
 
         <Route element={<LoginSignupLayout />}>

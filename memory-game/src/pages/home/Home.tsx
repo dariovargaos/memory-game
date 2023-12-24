@@ -47,6 +47,27 @@ export default function Home() {
     logout();
   };
 
+  const handleCreateSPRoom = async () => {
+    const gameId = uuid4();
+    try {
+      await setDoc(doc(db, "spRooms", gameId), {
+        createdBy: {
+          id: userData?.id,
+          displayName: userData?.displayName,
+        },
+        difficulty: "",
+        timer: false,
+        time: "",
+        gameState: { playing: false, completed: false },
+        turns: 0,
+        shuffledCards: [],
+      });
+      navigate(`/game/${gameId}`);
+    } catch (err) {
+      console.log("Error creating game room: ", err);
+    }
+  };
+
   const handleCreateGameRoom = async () => {
     const gameId = uuid4();
     try {
@@ -178,7 +199,7 @@ export default function Home() {
             variant="outline"
             color="white"
             _hover={{ background: "#c23866" }}
-            onClick={() => navigate("/game")}
+            onClick={handleCreateSPRoom}
           >
             Start
           </Button>

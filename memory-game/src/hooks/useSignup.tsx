@@ -81,6 +81,27 @@ export const useSignup = () => {
         displayName: displayName,
         wins: 0,
         losses: 0,
+        withTimer: {
+          easy: {
+            turns: "",
+            time: "",
+          },
+          medium: {
+            turns: "",
+            time: "",
+          },
+          hard: {
+            turns: "",
+            time: "",
+          },
+        },
+        withoutTimer: {
+          turns: {
+            easy: "",
+            medium: "",
+            hard: "",
+          },
+        },
       });
 
       //dispatch login action
