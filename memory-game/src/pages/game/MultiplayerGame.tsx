@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
+import { useDocument } from "../../hooks/useDocument";
 import { DocumentData, doc, onSnapshot, updateDoc } from "firebase/firestore";
 import { db } from "../../firebase/config";
 import {
@@ -51,6 +52,14 @@ export default function MultiplayerGame({
   const [disabled, setDisabled] = useState<boolean>(false);
   const [isGameWon, setIsGameWon] = useState<boolean>(false);
   const [winner, setWinner] = useState<string>("");
+  const { document: userOne, error: userOneError } = useDocument(
+    "users",
+    playerOne
+  );
+  const { document: userTwo, error: userTwoError } = useDocument(
+    "users",
+    playerTwo
+  );
 
   useEffect(() => {
     if (roomData?.id) {
@@ -183,10 +192,34 @@ export default function MultiplayerGame({
           gameState: { playing: false, completed: true },
         });
         if (roomData?.playerOneScore > roomData?.playerTwoScore) {
+          const userOneRef = doc(db, "users", playerOne);
+          const userTwoRef = doc(db, "users", playerTwo);
+          await updateDoc(userOneRef, {
+            wins: userOne?.wins + 1,
+          });
+          await updateDoc(userTwoRef, {
+            losses: userTwo?.losses + 1,
+          });
           setWinner(`The winner is ${roomData?.createdBy?.displayName}!`);
         } else if (roomData?.playerOneScore < roomData?.playerTwoScore) {
+          const userOneRef = doc(db, "users", playerOne);
+          const userTwoRef = doc(db, "users", playerTwo);
+          await updateDoc(userOneRef, {
+            losses: userOne?.losses + 1,
+          });
+          await updateDoc(userTwoRef, {
+            wins: userTwo?.wins + 1,
+          });
           setWinner(`The winner is ${roomData?.opponent?.displayName}!`);
         } else {
+          const userOneRef = doc(db, "users", playerOne);
+          const userTwoRef = doc(db, "users", playerTwo);
+          await updateDoc(userOneRef, {
+            ties: userOne?.ties + 1,
+          });
+          await updateDoc(userTwoRef, {
+            ties: userTwo?.ties + 1,
+          });
           setWinner("It's a tie! No winner!");
         }
         setIsGameWon(true);
@@ -201,6 +234,14 @@ export default function MultiplayerGame({
     roomData?.playerTwoScore,
     roomData?.opponent,
     roomData?.id,
+    playerOne,
+    playerTwo,
+    userOne?.losses,
+    userOne?.ties,
+    userOne?.wins,
+    userTwo?.losses,
+    userTwo?.ties,
+    userTwo?.wins,
   ]);
 
   //cleanup function

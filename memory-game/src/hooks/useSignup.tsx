@@ -81,6 +81,7 @@ export const useSignup = () => {
         displayName: displayName,
         wins: 0,
         losses: 0,
+        ties: 0,
         withTimer: {
           easy: {
             turns: "",

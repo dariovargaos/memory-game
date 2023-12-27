@@ -88,6 +88,7 @@ export default function UserProfile() {
             <Heading size="md">Multiplayer</Heading>
             <Text>Wins: {userData?.wins}</Text>
             <Text>Losses: {userData?.losses}</Text>
+            <Text>Ties: {userData?.ties}</Text>
           </Flex>
         </Flex>
       </Flex>
