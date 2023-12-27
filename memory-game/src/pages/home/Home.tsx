@@ -57,7 +57,7 @@ export default function Home() {
         },
         difficulty: "",
         timer: false,
-        time: "",
+        time: 0,
         gameState: { playing: false, completed: false },
         turns: 0,
         shuffledCards: [],

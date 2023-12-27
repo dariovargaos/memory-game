@@ -84,23 +84,23 @@ export const useSignup = () => {
         ties: 0,
         withTimer: {
           easy: {
-            turns: "",
-            time: "",
+            turns: 0,
+            time: 0,
           },
           medium: {
-            turns: "",
-            time: "",
+            turns: 0,
+            time: 0,
           },
           hard: {
-            turns: "",
-            time: "",
+            turns: 0,
+            time: 0,
           },
         },
         withoutTimer: {
           turns: {
-            easy: "",
-            medium: "",
-            hard: "",
+            easy: 0,
+            medium: 0,
+            hard: 0,
           },
         },
       });
@@ -115,7 +115,8 @@ export const useSignup = () => {
         navigate("/");
       }
       toast({
-        title: "Successfully signed up.",
+        title: "Welcome!",
+        description: "We have created account for you.",
         status: "success",
         variant: "customSuccess",
         duration: 3000,

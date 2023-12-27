@@ -2,7 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { useDocument } from "../../hooks/useDocument";
 import { useAuthContext } from "../../hooks/useAuthContext";
 import {
-  Box,
+  useBreakpointValue,
   Flex,
   Heading,
   Text,
@@ -23,8 +23,13 @@ export default function UserProfile() {
     "users",
     user?.uid
   );
+
+  const isSmallScreen = useBreakpointValue({
+    base: true,
+    lg: false,
+  });
   return (
-    <Flex flexDir="column" p={1}>
+    <Flex flexDir="column" p={2}>
       <Flex>
         <Button
           leftIcon={<ArrowBackIcon />}
@@ -39,15 +44,20 @@ export default function UserProfile() {
         color="white"
         flexDir="column"
         justify="center"
-        align="center"
-        h="calc(100vh - 50px)"
+        align={isSmallScreen ? "center" : "center"}
+        h={isSmallScreen ? "100vh" : "calc(100vh - 50px)"}
         gap={8}
       >
         <Flex flexDir="column">
           <Avatar bg="red.500" icon={<AiOutlineUser fontSize="1.5rem" />} />
           {user?.displayName}
         </Flex>
-        <Flex justify="space-evenly" w="100%">
+        <Flex
+          flexDir={isSmallScreen ? "column" : "row"}
+          justify="space-evenly"
+          w="100%"
+          gap={10}
+        >
           <Flex flexDir="column" textAlign="center" gap={3}>
             <Heading size="md">Single Player</Heading>
             <Flex flexDir="column" gap={4} align="center">

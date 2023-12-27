@@ -142,6 +142,11 @@ export default function SinglePlayerRoom() {
     }
   };
 
+  const isSmallScreen = useBreakpointValue({
+    base: true,
+    lg: false,
+  });
+
   return (
     <Flex flexDir="column">
       <Flex p={2}>
@@ -149,8 +154,14 @@ export default function SinglePlayerRoom() {
           Leave game
         </Button>
       </Flex>
-      <Flex justify={isGameStarted ? "space-around" : ""} align="center" p={2}>
-        <Flex flexDir="column" gap={5} align="center">
+      <Flex
+        flexDir={isSmallScreen ? "column" : "row"}
+        justify={isGameStarted ? "space-around" : ""}
+        align="center"
+        gap={isSmallScreen ? 10 : 0}
+        p={2}
+      >
+        <Flex flexDir="column" gap={5}>
           <Card
             background="transparent"
             color="white"

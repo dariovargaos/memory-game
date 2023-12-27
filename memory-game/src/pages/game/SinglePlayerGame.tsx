@@ -1,9 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import { Link as RouterLink, useParams } from "react-router-dom";
-import { useStorage } from "../../hooks/useStorage";
 import { useDocument } from "../../hooks/useDocument";
-import { useAuthContext } from "../../hooks/useAuthContext";
-import { v4 as uuid4 } from "uuid";
 
 import {
   Button,
@@ -54,6 +50,10 @@ export default function SinglePlayerGame({
   const [disabled, setDisabled] = useState<boolean>(false);
   const [isGameWon, setIsGameWon] = useState<boolean>(false);
   const [remainingTime, setRemainingTime] = useState(timer);
+  const { document: userData, error: userError } = useDocument(
+    "users",
+    user?.uid
+  );
 
   useEffect(() => {
     if (roomData?.id) {
@@ -157,8 +157,16 @@ export default function SinglePlayerGame({
       const allMatched = cards.every((card) => card.matched);
       if (allMatched && cards.length > 0) {
         const gameRoomRef = doc(db, "spRooms", roomData?.id);
+        const userDocRef = doc(db, "users", userData?.id);
         await updateDoc(gameRoomRef, {
           gameState: { playing: false, completed: true },
+        });
+        await updateDoc(userDocRef, {
+          withoutTimer: {
+            turns: {
+              easy: roomData?.turns,
+            },
+          },
         });
         setIsGameWon(true);
       }
