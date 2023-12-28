@@ -69,6 +69,10 @@ export default function SinglePlayerGame({
     }
   }, [roomData?.id]);
 
+  useEffect(() => {
+    setRemainingTime(timer);
+  }, [timer]);
+
   //handle choice
   const handleChoice = async (selectedCard: Card) => {
     if (timerEnabled && timer === 0) {
@@ -151,29 +155,89 @@ export default function SinglePlayerGame({
     checkMatch();
   }, [choiceOne, choiceTwo, roomData?.id, roomData?.shuffledCards, resetTurn]);
 
+  //check for difficulty and update turns without timer
+  const updateUserTurns = useCallback(async () => {
+    const userDocRef = doc(db, "users", userData?.id);
+    if (!timerEnabled) {
+      switch (roomData?.difficulty) {
+        case "easy":
+          await updateDoc(userDocRef, {
+            withoutTimer: {
+              turns: {
+                easy: roomData?.turns,
+              },
+            },
+          });
+          break;
+        case "medium":
+          await updateDoc(userDocRef, {
+            withoutTimer: {
+              turns: {
+                medium: roomData?.turns,
+              },
+            },
+          });
+          break;
+        case "hard":
+          await updateDoc(userDocRef, {
+            withoutTimer: {
+              turns: {
+                hard: roomData?.turns,
+              },
+            },
+          });
+          break;
+        default:
+          console.log("Cant update user profile turns SP");
+      }
+    } else {
+      switch (roomData?.difficulty) {
+        case "easy":
+          await updateDoc(userDocRef, {
+            [`withTimer.easy.time`]: remainingTime,
+            [`withTimer.easy.turns`]: roomData?.turns,
+          });
+          break;
+        case "medium":
+          await updateDoc(userDocRef, {
+            [`withTimer.medium.time`]: remainingTime,
+            [`withTimer.medium.turns`]: roomData?.turns,
+          });
+          break;
+        case "hard":
+          await updateDoc(userDocRef, {
+            [`withTimer.hard.time`]: remainingTime,
+            [`withTimer.hard.turns`]: roomData?.turns,
+          });
+          break;
+        default:
+          console.log("Cant update user profile turns SP");
+      }
+    }
+  }, [
+    roomData?.difficulty,
+    roomData?.turns,
+    userData?.id,
+    timerEnabled,
+    remainingTime,
+  ]);
+
   //check whether the all cards have matched property on true
   useEffect(() => {
     const checkIsGameDone = async () => {
       const allMatched = cards.every((card) => card.matched);
       if (allMatched && cards.length > 0) {
         const gameRoomRef = doc(db, "spRooms", roomData?.id);
-        const userDocRef = doc(db, "users", userData?.id);
         await updateDoc(gameRoomRef, {
           gameState: { playing: false, completed: true },
         });
-        await updateDoc(userDocRef, {
-          withoutTimer: {
-            turns: {
-              easy: roomData?.turns,
-            },
-          },
-        });
         setIsGameWon(true);
+        updateUserTurns();
       }
     };
 
     checkIsGameDone();
-  }, [cards, roomData?.id]);
+  }, [cards, roomData?.id, roomData?.turns, userData?.id, updateUserTurns]);
 
   //cleanup function
   useEffect(() => {

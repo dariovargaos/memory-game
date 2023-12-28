@@ -135,6 +135,7 @@ export default function UserProfile() {
           </Flex>
         </Flex>
       </Flex>
+      <Text color="white">{userError}</Text>
     </Flex>
   );
 }

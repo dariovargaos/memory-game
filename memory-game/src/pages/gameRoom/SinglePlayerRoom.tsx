@@ -69,7 +69,7 @@ export default function SinglePlayerRoom() {
 
       if (timerEnabled) {
         const timeLimit =
-          difficulty === "easy" ? 5 : difficulty === "medium" ? 55 : 65;
+          difficulty === "easy" ? 45 : difficulty === "medium" ? 55 : 65;
         setTimer(timeLimit);
       } else {
         setTimer(0);
