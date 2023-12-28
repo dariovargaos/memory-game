@@ -27,6 +27,10 @@ export const useSignup = () => {
   const navigate = useNavigate();
   const toast = useToast();
 
+  const getRandomColorForAvatar = () => {
+    return "#" + Math.floor(Math.random() * 0xffffff).toString(16);
+  };
+
   const validateInput = (
     email: string,
     password: string,
@@ -103,6 +107,7 @@ export const useSignup = () => {
             hard: 0,
           },
         },
+        avatarColor: getRandomColorForAvatar(),
       });
 
       //dispatch login action

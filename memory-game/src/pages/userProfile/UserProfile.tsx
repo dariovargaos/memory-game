@@ -10,6 +10,11 @@ import {
   ListItem,
   Button,
   Avatar,
+  Card,
+  CardBody,
+  Stack,
+  StackDivider,
+  Box,
 } from "@chakra-ui/react";
 
 //icons
@@ -45,60 +50,88 @@ export default function UserProfile() {
         flexDir="column"
         justify="center"
         align={isSmallScreen ? "center" : "center"}
-        h={isSmallScreen ? "100vh" : "calc(100vh - 50px)"}
+        h={isSmallScreen ? "100vh" : "calc(100vh - 60px)"}
         gap={8}
       >
-        <Flex flexDir="column">
-          <Avatar bg="red.500" icon={<AiOutlineUser fontSize="1.5rem" />} />
-          {user?.displayName}
-        </Flex>
         <Flex
           flexDir={isSmallScreen ? "column" : "row"}
           justify="space-evenly"
+          align="center"
           w="100%"
           gap={10}
         >
           <Flex flexDir="column" textAlign="center" gap={3}>
-            <Heading size="md">Single Player</Heading>
-            <Flex flexDir="column" gap={4} align="center">
-              <Flex>
-                <Text fontWeight="bold">Without timer:</Text>
-                <List>
-                  <ListItem>
-                    easy - {userData?.withoutTimer.turns.easy} turns
-                  </ListItem>
-                  <ListItem>
-                    medium - {userData?.withoutTimer.turns.medium} turns
-                  </ListItem>
-                  <ListItem>
-                    hard - {userData?.withoutTimer.turns.hard} turns
-                  </ListItem>
-                </List>
-              </Flex>
-              <Flex>
-                <Text fontWeight="bold">With timer:</Text>
-                <List>
-                  <ListItem>
-                    easy - {userData?.withTimer.easy.turns} turns with{" "}
-                    {userData?.withTimer.easy.time}s left
-                  </ListItem>
-                  <ListItem>
-                    medium - {userData?.withTimer.medium.turns} turns with{" "}
-                    {userData?.withTimer.medium.time}s left
-                  </ListItem>
-                  <ListItem>
-                    hard - {userData?.withTimer.hard.turns} turns with{" "}
-                    {userData?.withTimer.hard.time}s left
-                  </ListItem>
-                </List>
-              </Flex>
-            </Flex>
+            <Card
+              background="transparent"
+              color="white"
+              size={isSmallScreen ? "sm" : "lg"}
+              border="1px solid white"
+            >
+              <CardBody>
+                <Stack divider={<StackDivider />} spacing={4}>
+                  <Box>
+                    <Heading size="md">Single Player</Heading>
+                    <Flex>
+                      <Text fontWeight="bold">Without timer:</Text>
+                      <List>
+                        <ListItem>
+                          easy - {userData?.withoutTimer.turns.easy} turns
+                        </ListItem>
+                        <ListItem>
+                          medium - {userData?.withoutTimer.turns.medium} turns
+                        </ListItem>
+                        <ListItem>
+                          hard - {userData?.withoutTimer.turns.hard} turns
+                        </ListItem>
+                      </List>
+                    </Flex>
+                  </Box>
+                  <Box>
+                    <Flex>
+                      <Text fontWeight="bold">With timer:</Text>
+                      <List>
+                        <ListItem>
+                          easy - {userData?.withTimer.easy.turns} turns with{" "}
+                          {userData?.withTimer.easy.time}s left
+                        </ListItem>
+                        <ListItem>
+                          medium - {userData?.withTimer.medium.turns} turns with{" "}
+                          {userData?.withTimer.medium.time}s left
+                        </ListItem>
+                        <ListItem>
+                          hard - {userData?.withTimer.hard.turns} turns with{" "}
+                          {userData?.withTimer.hard.time}s left
+                        </ListItem>
+                      </List>
+                    </Flex>
+                  </Box>
+                </Stack>
+              </CardBody>
+            </Card>
+          </Flex>
+          <Flex flexDir="column">
+            <Avatar
+              bg={userData?.avatarColor}
+              icon={<AiOutlineUser fontSize="1.5rem" />}
+            />
+            {user?.displayName}
           </Flex>
           <Flex flexDir="column" textAlign="center" gap={3}>
-            <Heading size="md">Multiplayer</Heading>
-            <Text>Wins: {userData?.wins}</Text>
-            <Text>Losses: {userData?.losses}</Text>
-            <Text>Ties: {userData?.ties}</Text>
+            <Card
+              background="transparent"
+              color="white"
+              size={isSmallScreen ? "sm" : "lg"}
+              border="1px solid white"
+            >
+              <CardBody>
+                <Heading size="md">Multiplayer</Heading>
+                <List>
+                  <ListItem>Wins: {userData?.wins}</ListItem>
+                  <ListItem>Losses: {userData?.losses}</ListItem>
+                  <ListItem>Ties: {userData?.ties}</ListItem>
+                </List>
+              </CardBody>
+            </Card>
           </Flex>
         </Flex>
       </Flex>
