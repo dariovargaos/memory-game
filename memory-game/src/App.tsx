@@ -24,7 +24,10 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/game/:gameId" element={<SinglePlayerRoom />} />
         <Route path="/room/:gameId" element={<GameRoom />} />
-        <Route path="/user/:id" element={<UserProfile />} />
+        <Route
+          path="/user/:id"
+          element={user ? <UserProfile /> : <Navigate to="/" />}
+        />
 
         <Route element={<LoginSignupLayout />}>
           <Route

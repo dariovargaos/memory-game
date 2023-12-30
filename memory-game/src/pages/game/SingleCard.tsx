@@ -3,7 +3,7 @@ import { Card } from "./SinglePlayerGame";
 
 interface SingleCardProps {
   card: Card;
-  handleChoice: (selectedCard: Card) => Promise<void>;
+  handleChoice: (selectedCard: Card) => void;
   flipped: boolean;
   disabled: boolean;
 }

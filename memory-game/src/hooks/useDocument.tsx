@@ -17,7 +17,8 @@ export const useDocument = (
   //realtime data for document
   useEffect(() => {
     if (!id) {
-      setError("Document ID is undefined");
+      setDocument(null);
+      setError(null);
       return;
     }
     const docRef = doc(db, collectionName, id);

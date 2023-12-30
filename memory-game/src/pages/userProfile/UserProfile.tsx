@@ -36,12 +36,7 @@ export default function UserProfile() {
   return (
     <Flex flexDir="column" p={2}>
       <Flex>
-        <Button
-          leftIcon={<ArrowBackIcon />}
-          onClick={() => navigate("/")}
-          variant="outline"
-          color="white"
-        >
+        <Button leftIcon={<ArrowBackIcon />} onClick={() => navigate("/")}>
           Go Back
         </Button>
       </Flex>

@@ -15,6 +15,7 @@ import {
   useBreakpointValue,
   Card,
   Box,
+  Text,
 } from "@chakra-ui/react";
 
 //components
@@ -303,6 +304,8 @@ export default function MultiplayerGame({
           </ModalContent>
         </Modal>
       )}
+      <Text>{userOneError}</Text>
+      <Text>{userTwoError}</Text>
     </Box>
   );
 }

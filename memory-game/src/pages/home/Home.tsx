@@ -49,22 +49,38 @@ export default function Home() {
 
   const handleCreateSPRoom = async () => {
     const gameId = uuid4();
-    try {
-      await setDoc(doc(db, "spRooms", gameId), {
-        createdBy: {
-          id: userData?.id,
-          displayName: userData?.displayName,
-        },
-        difficulty: "",
-        timer: false,
-        time: 0,
-        gameState: { playing: false, completed: false },
-        turns: 0,
-        shuffledCards: [],
-      });
-      navigate(`/game/${gameId}`);
-    } catch (err) {
-      console.log("Error creating game room: ", err);
+    if (user) {
+      try {
+        await setDoc(doc(db, "spRooms", gameId), {
+          createdBy: {
+            id: userData?.id,
+            displayName: userData?.displayName,
+          },
+          difficulty: "",
+          timer: false,
+          time: 0,
+          gameState: { playing: false, completed: false },
+          turns: 0,
+          shuffledCards: [],
+        });
+        navigate(`/game/${gameId}`);
+      } catch (err) {
+        console.log("Error creating game room: ", err);
+      }
+    } else {
+      try {
+        await setDoc(doc(db, "spRooms", gameId), {
+          difficulty: "",
+          timer: false,
+          time: 0,
+          gameState: { playing: false, completed: false },
+          turns: 0,
+          shuffledCards: [],
+        });
+        navigate(`/game/${gameId}`);
+      } catch (err) {
+        console.log("Error creating game room without user: ", err);
+      }
     }
   };
 
@@ -153,41 +169,29 @@ export default function Home() {
           {!user ? (
             <>
               <Spacer />
-              <Link as={RouterLink} to="/login" color="white" fontWeight="bold">
+              <Button as={RouterLink} to="/login">
                 Login
-              </Link>
+              </Button>
             </>
           ) : (
             <>
-              <Button
-                color="white"
-                variant="outline"
-                _hover={{ background: "#c23866" }}
-                onClick={() => setIsOpenMPModal(true)}
-              >
+              <Button onClick={() => setIsOpenMPModal(true)}>
                 Play with friend
               </Button>
               <Spacer />
               <Flex gap={2} align="center">
-                <Link as={RouterLink} to={`/user/${user.uid}`} color="white">
+                <Link
+                  as={RouterLink}
+                  to={`/user/${user.uid}`}
+                  color="white"
+                  fontWeight="bold"
+                >
                   hello, {user.displayName}
                 </Link>
                 {isPending ? (
-                  <Button
-                    isLoading
-                    loadingText="Logging out..."
-                    variant="outline"
-                    color="white"
-                  ></Button>
+                  <Button isLoading loadingText="Logging out..."></Button>
                 ) : (
-                  <Button
-                    color="white"
-                    variant="outline"
-                    onClick={() => handleLogout()}
-                    _hover={{ background: "#301934" }}
-                  >
-                    Logout
-                  </Button>
+                  <Button onClick={() => handleLogout()}>Logout</Button>
                 )}
               </Flex>
             </>
@@ -197,14 +201,7 @@ export default function Home() {
           <Heading as="h1" color="white" size={{ base: "lg" }}>
             Welcome to Magic Match!
           </Heading>
-          <Button
-            variant="outline"
-            color="white"
-            _hover={{ background: "#c23866" }}
-            onClick={handleCreateSPRoom}
-          >
-            Start
-          </Button>
+          <Button onClick={handleCreateSPRoom}>Start</Button>
         </VStack>
 
         <Grid
@@ -275,38 +272,21 @@ export default function Home() {
           <ModalHeader>Play with friend</ModalHeader>
           <ModalCloseButton />
           <ModalBody display="flex" flexDir="column" gap={4}>
-            <Button
-              onClick={handleCreateGameRoom}
-              variant="outline"
-              color="white"
-              _hover={{ background: "transparent" }}
-            >
+            <Button onClick={handleCreateGameRoom}>
               Invite Friend via Code
             </Button>
             <form onSubmit={handleJoinGame}>
               <FormControl>
                 <FormLabel>Enter code</FormLabel>
                 <Input name="gameId" />
-                <Button
-                  type="submit"
-                  color="white"
-                  variant="outline"
-                  _hover={{ background: "transparent" }}
-                >
+                <Button type="submit" mt={2}>
                   Submit
                 </Button>
               </FormControl>
             </form>
           </ModalBody>
           <ModalFooter>
-            <Button
-              color="white"
-              variant="outline"
-              onClick={() => setIsOpenMPModal(false)}
-              _hover={{ background: "transparent" }}
-            >
-              Close
-            </Button>
+            <Button onClick={() => setIsOpenMPModal(false)}>Close</Button>
           </ModalFooter>
         </ModalContent>
       </Modal>

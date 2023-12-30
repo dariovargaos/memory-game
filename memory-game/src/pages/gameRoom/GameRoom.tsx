@@ -203,9 +203,7 @@ export default function GameRoom() {
     <Flex flexDir="column" overflow="auto" h="100vh">
       <Flex justify="space-between" w="100%" p={4}>
         {!roomData?.gameState?.playing && (
-          <Button onClick={handleLeaveRoom} variant="outline" color="white">
-            Leave Room
-          </Button>
+          <Button onClick={handleLeaveRoom}>Leave Room</Button>
         )}
 
         {user?.uid === roomData?.createdBy?.id &&
@@ -259,12 +257,7 @@ export default function GameRoom() {
           <Box textAlign="center" mb="4">
             <Text color="white">Game ID: {gameId}</Text>
             <Flex flexDir="column" gap={3} align="center">
-              <Button
-                onClick={handleCopyToClipboard}
-                rightIcon={<CopyIcon />}
-                variant="outline"
-                color="white"
-              >
+              <Button onClick={handleCopyToClipboard} rightIcon={<CopyIcon />}>
                 Copy Game ID
               </Button>
               {user?.uid === roomData?.createdBy?.id && (
@@ -273,8 +266,6 @@ export default function GameRoom() {
                   isDisabled={
                     !roomData?.opponent || roomData?.gameState?.waiting
                   }
-                  variant="outline"
-                  color="white"
                 >
                   Play
                 </Button>

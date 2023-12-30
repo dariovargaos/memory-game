@@ -1,10 +1,10 @@
 import { useState, useEffect, useCallback } from "react";
 import { useDocument } from "../../hooks/useDocument";
+import { DocumentData, doc, onSnapshot, updateDoc } from "firebase/firestore";
+import { db } from "../../firebase/config";
 
 import {
   Button,
-  Text,
-  Flex,
   SimpleGrid,
   Modal,
   ModalOverlay,
@@ -13,30 +13,30 @@ import {
   ModalFooter,
   ModalBody,
   ModalCloseButton,
-  Link,
-  useBreakpointValue,
-  Progress,
   Card,
-  CardBody,
-  Stack,
-  StackDivider,
   Box,
-  RadioGroup,
-  Radio,
-  Heading,
+  Text,
 } from "@chakra-ui/react";
 
 //components
 import SingleCard from "./SingleCard";
-import { doc, onSnapshot, updateDoc } from "firebase/firestore";
-import { db } from "../../firebase/config";
-import { update } from "firebase/database";
+
+//types
+import { User } from "../../context/AuthContext";
 
 export interface Card {
   id: number;
   src: string;
   cardBackImage: string;
   matched: boolean;
+  flipped: boolean;
+}
+
+interface SinglePlayerGameProps {
+  roomData: DocumentData | null;
+  user?: User | null;
+  timer: number;
+  timerEnabled: boolean;
 }
 
 export default function SinglePlayerGame({
@@ -44,7 +44,7 @@ export default function SinglePlayerGame({
   user,
   timer,
   timerEnabled,
-}) {
+}: SinglePlayerGameProps) {
   const [cards, setCards] = useState<Card[]>([]);
   const [choiceOne, setChoiceOne] = useState<Card | null>(null);
   const [choiceTwo, setChoiceTwo] = useState<Card | null>(null);
@@ -80,24 +80,21 @@ export default function SinglePlayerGame({
       console.log("TIME'S UP, NO MORE MOVES ALLOWED.");
       return;
     }
-    if (user?.uid) {
-      const gameRoomRef = doc(db, "spRooms", roomData?.id);
 
-      //find the card in the shuffleCards array and flip it
-      const updatedCards = roomData?.shuffledCards.map((card) =>
-        card.id === selectedCard.id ? { ...card, flipped: !card.flipped } : card
-      );
+    const gameRoomRef = doc(db, "spRooms", roomData?.id);
 
-      //update Firestore document
-      updateDoc(gameRoomRef, {
-        shuffledCards: updatedCards,
-      });
+    //find the card in the shuffleCards array and flip it
+    const updatedCards = roomData?.shuffledCards.map((card: Card) =>
+      card.id === selectedCard.id ? { ...card, flipped: !card.flipped } : card
+    );
 
-      //set the choice in the local state
-      choiceOne ? setChoiceTwo(selectedCard) : setChoiceOne(selectedCard);
-    } else {
-      console.log("Error making choice");
-    }
+    //update Firestore document
+    updateDoc(gameRoomRef, {
+      shuffledCards: updatedCards,
+    });
+
+    //set the choice in the local state
+    choiceOne ? setChoiceTwo(selectedCard) : setChoiceOne(selectedCard);
   };
 
   //reset choices and increase turn
@@ -121,7 +118,7 @@ export default function SinglePlayerGame({
         if (choiceOne.src === choiceTwo.src) {
           //cards are matched
           //update matched cards in firestore
-          const updatedCards = roomData?.shuffledCards.map((card) => {
+          const updatedCards = roomData?.shuffledCards.map((card: Card) => {
             return card.src === choiceOne.src
               ? { ...card, matched: true }
               : card;
@@ -136,7 +133,7 @@ export default function SinglePlayerGame({
           //cards do not match, flip them back after a delay
           setTimeout(() => {
             //reset the flipped state of the cards in firestore
-            const updatedCards = roomData?.shuffledCards.map((card) => {
+            const updatedCards = roomData?.shuffledCards.map((card: Card) => {
               return card.id === choiceOne.id || card.id === choiceTwo.id
                 ? { ...card, flipped: false }
                 : card;
@@ -156,8 +153,10 @@ export default function SinglePlayerGame({
     checkMatch();
   }, [choiceOne, choiceTwo, roomData?.id, roomData?.shuffledCards, resetTurn]);
 
-  //check for difficulty and update turns without timer
+  //update user profile single player section
   const updateUserTurns = useCallback(async () => {
+    if (!userData) return;
+
     const userDocRef = doc(db, "users", userData?.id);
     const difficultyPath = `withTimer.${roomData?.difficulty}`;
     if (!timerEnabled) {
@@ -173,9 +172,9 @@ export default function SinglePlayerGame({
   }, [
     roomData?.difficulty,
     roomData?.turns,
-    userData?.id,
     timerEnabled,
     remainingTime,
+    userData,
   ]);
 
   //check whether the all cards have matched property on true
@@ -188,12 +187,21 @@ export default function SinglePlayerGame({
           gameState: { playing: false, completed: true },
         });
         setIsGameWon(true);
-        updateUserTurns();
+        if (userData) {
+          updateUserTurns();
+        }
       }
     };
 
     checkIsGameDone();
-  }, [cards, roomData?.id, roomData?.turns, userData?.id, updateUserTurns]);
+  }, [
+    cards,
+    roomData?.id,
+    roomData?.turns,
+    userData?.id,
+    updateUserTurns,
+    userData,
+  ]);
 
   //cleanup function
   useEffect(() => {
@@ -262,6 +270,7 @@ export default function SinglePlayerGame({
           </ModalContent>
         </Modal>
       )}
+      <Text>{userError}</Text>
     </Box>
   );
 }

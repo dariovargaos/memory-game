@@ -55,6 +55,11 @@ const customTheme = extendTheme({
         },
       }),
     },
+    Button: {
+      defaultProps: {
+        colorScheme: "pink",
+      },
+    },
   },
 });
 

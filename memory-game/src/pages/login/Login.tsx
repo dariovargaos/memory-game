@@ -74,7 +74,7 @@ export default function Login() {
                   placeholder="Your password"
                 />
                 <InputRightElement>
-                  <Button variant="ghost" color="white" onClick={handleClick}>
+                  <Button variant="ghost" onClick={handleClick}>
                     {showPassword ? <ViewIcon /> : <ViewOffIcon />}
                   </Button>
                 </InputRightElement>
@@ -87,16 +87,9 @@ export default function Login() {
             )}
             <Flex justify="center">
               {!isPending ? (
-                <Button type="submit" variant="outline" color="white">
-                  Login
-                </Button>
+                <Button type="submit">Login</Button>
               ) : (
-                <Button
-                  isLoading
-                  loadingText="Logging in..."
-                  colorScheme="pink"
-                  color="white"
-                ></Button>
+                <Button isLoading loadingText="Logging in..."></Button>
               )}
             </Flex>
           </Flex>

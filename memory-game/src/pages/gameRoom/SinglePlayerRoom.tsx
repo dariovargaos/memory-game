@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link as RouterLink, useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { useStorage } from "../../hooks/useStorage";
 import { useDocument } from "../../hooks/useDocument";
 import { useAuthContext } from "../../hooks/useAuthContext";
@@ -26,13 +26,15 @@ import {
   Radio,
   Heading,
   useToast,
-  Spacer,
 } from "@chakra-ui/react";
-import { deleteDoc, doc, onSnapshot, updateDoc } from "firebase/firestore";
+import { deleteDoc, doc, updateDoc } from "firebase/firestore";
 import { db } from "../../firebase/config";
 
 //components
 import SinglePlayerGame from "../game/SinglePlayerGame";
+
+//types
+import { CardImage } from "../../hooks/useStorage";
 
 export default function SinglePlayerRoom() {
   const [isGameStarted, setIsGameStarted] = useState<boolean>(false);
@@ -51,7 +53,7 @@ export default function SinglePlayerRoom() {
   const toast = useToast();
 
   //shuffling the cards
-  const shuffleCards = (cardImages) => {
+  const shuffleCards = (cardImages: CardImage[]) => {
     if (cardImages) {
       console.log(cardImages);
       const numberOfPairs =
@@ -87,9 +89,9 @@ export default function SinglePlayerRoom() {
 
   //creating countdown timer
   useEffect(() => {
-    let interval;
+    let interval: number;
     if (roomData?.timer && roomData?.gameState.playing && timer > 0) {
-      interval = setInterval(() => {
+      interval = window.setInterval(() => {
         setTimer((prevTimer) => prevTimer - 1);
       }, 1000);
     } else if (timer === 0 && roomData?.timer && roomData?.gameState.playing) {
@@ -286,6 +288,7 @@ export default function SinglePlayerRoom() {
           </ModalContent>
         </Modal>
       )}
+      <Text>{roomError}</Text>
     </Flex>
   );
 }
