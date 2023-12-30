@@ -30,6 +30,7 @@ import {
 import SingleCard from "./SingleCard";
 import { doc, onSnapshot, updateDoc } from "firebase/firestore";
 import { db } from "../../firebase/config";
+import { update } from "firebase/database";
 
 export interface Card {
   id: number;
@@ -74,7 +75,7 @@ export default function SinglePlayerGame({
   }, [timer]);
 
   //handle choice
-  const handleChoice = async (selectedCard: Card) => {
+  const handleChoice = (selectedCard: Card) => {
     if (timerEnabled && timer === 0) {
       console.log("TIME'S UP, NO MORE MOVES ALLOWED.");
       return;
@@ -88,7 +89,7 @@ export default function SinglePlayerGame({
       );
 
       //update Firestore document
-      await updateDoc(gameRoomRef, {
+      updateDoc(gameRoomRef, {
         shuffledCards: updatedCards,
       });
 
@@ -113,7 +114,7 @@ export default function SinglePlayerGame({
 
   //compare two selected card
   useEffect(() => {
-    const checkMatch = async () => {
+    const checkMatch = () => {
       if (choiceOne && choiceTwo) {
         setDisabled(true);
 
@@ -127,13 +128,13 @@ export default function SinglePlayerGame({
           });
 
           const gameRoomRef = doc(db, "spRooms", roomData?.id);
-          await updateDoc(gameRoomRef, {
+          updateDoc(gameRoomRef, {
             shuffledCards: updatedCards,
           });
           resetTurn();
         } else {
           //cards do not match, flip them back after a delay
-          setTimeout(async () => {
+          setTimeout(() => {
             //reset the flipped state of the cards in firestore
             const updatedCards = roomData?.shuffledCards.map((card) => {
               return card.id === choiceOne.id || card.id === choiceTwo.id
@@ -142,7 +143,7 @@ export default function SinglePlayerGame({
             });
 
             const gameRoomRef = doc(db, "spRooms", roomData?.id);
-            await updateDoc(gameRoomRef, {
+            updateDoc(gameRoomRef, {
               shuffledCards: updatedCards,
             });
 
@@ -158,61 +159,16 @@ export default function SinglePlayerGame({
   //check for difficulty and update turns without timer
   const updateUserTurns = useCallback(async () => {
     const userDocRef = doc(db, "users", userData?.id);
+    const difficultyPath = `withTimer.${roomData?.difficulty}`;
     if (!timerEnabled) {
-      switch (roomData?.difficulty) {
-        case "easy":
-          await updateDoc(userDocRef, {
-            withoutTimer: {
-              turns: {
-                easy: roomData?.turns,
-              },
-            },
-          });
-          break;
-        case "medium":
-          await updateDoc(userDocRef, {
-            withoutTimer: {
-              turns: {
-                medium: roomData?.turns,
-              },
-            },
-          });
-          break;
-        case "hard":
-          await updateDoc(userDocRef, {
-            withoutTimer: {
-              turns: {
-                hard: roomData?.turns,
-              },
-            },
-          });
-          break;
-        default:
-          console.log("Cant update user profile turns SP");
-      }
+      await updateDoc(userDocRef, {
+        [`withoutTimer.turns.${roomData?.difficulty}`]: roomData?.turns,
+      });
     } else {
-      switch (roomData?.difficulty) {
-        case "easy":
-          await updateDoc(userDocRef, {
-            [`withTimer.easy.time`]: remainingTime,
-            [`withTimer.easy.turns`]: roomData?.turns,
-          });
-          break;
-        case "medium":
-          await updateDoc(userDocRef, {
-            [`withTimer.medium.time`]: remainingTime,
-            [`withTimer.medium.turns`]: roomData?.turns,
-          });
-          break;
-        case "hard":
-          await updateDoc(userDocRef, {
-            [`withTimer.hard.time`]: remainingTime,
-            [`withTimer.hard.turns`]: roomData?.turns,
-          });
-          break;
-        default:
-          console.log("Cant update user profile turns SP");
-      }
+      await updateDoc(userDocRef, {
+        [`${difficultyPath}.turns`]: roomData?.turns,
+        [`${difficultyPath}.time`]: remainingTime,
+      });
     }
   }, [
     roomData?.difficulty,
